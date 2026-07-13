@@ -1,0 +1,293 @@
+import {
+  SkillGameKey,
+  SkillGameRegistryEntry,
+} from './skillsRuntimeTypes';
+
+export const SKILLS_GAME_REGISTRY = [
+  {
+    moduleId: 'typing_meteor_defense',
+    gameKey: 'typing_meteor_defense',
+    title: 'Typing Meteor Defense',
+    route: '/gaming/typing-meteor-defense',
+    componentFolder: 'components/gaming/typing-meteor',
+    assetFolder: null,
+    aliases: ['typing-meteor', 'typing_meteor'],
+    category: 'timing',
+    status: 'playable',
+    notes: 'Component folder differs from route and canonical key; asset folder missing.',
+  },
+  {
+    moduleId: 'story_sort',
+    gameKey: 'story_sort',
+    title: 'Story Sort Drag-and-Drop',
+    route: '/gaming/story-sort',
+    componentFolder: 'components/gaming/story-sort',
+    assetFolder: null,
+    aliases: ['story-sort'],
+    category: 'drag_drop',
+    status: 'playable',
+    notes: 'Asset folder missing.',
+  },
+  {
+    moduleId: 'target_tracker_adventure',
+    gameKey: 'target_tracker_adventure',
+    title: 'Target Tracker Adventure',
+    route: '/gaming/target-tracker',
+    componentFolder: 'components/gaming/target-tracker',
+    assetFolder: 'assets/skills/target-tracker-adventure',
+    aliases: ['target_tracker', 'target-tracker', 'target-tracker-adventure'],
+    category: 'mouse',
+    status: 'playable',
+    notes: 'Current component GAME_KEY uses target_tracker; registry canonicalizes to target_tracker_adventure.',
+  },
+  {
+    moduleId: 'word_builder_farm',
+    gameKey: 'word_builder_farm',
+    title: 'Word Builder Farm',
+    route: '/skills/word-builder-farm',
+    componentFolder: 'skills/src/modules/skills/components/games/word-builder-farm',
+    assetFolder: 'assets/skills/word-builder-farm',
+    aliases: ['word-builder-farm', 'gaming/word-builder-farm', '/gaming/word-builder-farm'],
+    category: 'keyboard',
+    status: 'playable',
+    notes: '/gaming/word-builder-farm remains a temporary compatibility route.',
+  },
+  {
+    moduleId: 'math_key_quest',
+    gameKey: 'math_key_quest',
+    title: 'Math Key Quest',
+    route: '/gaming/math-key-quest',
+    componentFolder: 'components/gaming/math-key-quest',
+    assetFolder: 'assets/skills/math-key-quest',
+    aliases: ['math-key-quest'],
+    category: 'keyboard',
+    status: 'playable',
+  },
+  {
+    moduleId: 'bug_trail_maze',
+    gameKey: 'bug_trail_maze',
+    title: 'Bug Trail Maze',
+    route: '/gaming/bug-trail-maze',
+    componentFolder: 'components/gaming/bug-trail-maze',
+    assetFolder: 'assets/skills/bug-trail-maze',
+    aliases: ['bug-trail-maze'],
+    category: 'mixed',
+    status: 'playable',
+  },
+  {
+    moduleId: 'rhythm_row_typing',
+    gameKey: 'rhythm_row_typing',
+    title: 'Rhythm Row Typing',
+    route: '/gaming/rhythm-row-typing',
+    componentFolder: 'components/gaming/rhythm-row-typing',
+    assetFolder: 'assets/skills/rhythm-row-typing',
+    aliases: ['rhythm-row-typing'],
+    category: 'timing',
+    status: 'playable',
+  },
+  {
+    moduleId: 'code_keys_workshop',
+    gameKey: 'code_keys_workshop',
+    title: 'Code Keys Workshop',
+    route: '/gaming/code-keys-workshop',
+    componentFolder: 'components/gaming/code-keys-workshop',
+    assetFolder: 'assets/skills/code-keys-workshop',
+    aliases: ['code-keys-workshop'],
+    category: 'keyboard',
+    status: 'playable',
+  },
+  {
+    moduleId: 'galaxy_click_command',
+    gameKey: 'galaxy_click_command',
+    title: 'Galaxy Click Command',
+    route: '/gaming/galaxy-click-command',
+    componentFolder: 'components/gaming/galaxy-click-command',
+    assetFolder: 'assets/skills/galaxy-click-command',
+    aliases: ['galaxy-click-command'],
+    category: 'mouse',
+    status: 'playable',
+  },
+  {
+    moduleId: 'circuit_builder_lab',
+    gameKey: 'circuit_builder_lab',
+    title: 'Circuit Builder Lab',
+    route: '/gaming/circuit-builder-lab',
+    componentFolder: 'components/gaming/circuit-builder-lab',
+    assetFolder: 'assets/skills/circut-builder-lab',
+    aliases: ['circuit-builder-lab', 'circut-builder-lab'],
+    category: 'puzzle',
+    status: 'playable',
+    notes: 'Asset/refinement folder currently uses misspelled circut-builder-lab.',
+  },
+  {
+    moduleId: 'gravity_workshop',
+    gameKey: 'gravity_workshop',
+    title: 'Gravity Workshop',
+    route: '/gaming/gravity-workshop',
+    componentFolder: 'components/gaming/gravity-workshop',
+    assetFolder: 'assets/skills/gravity-workshop',
+    aliases: ['gravity-workshop'],
+    category: 'puzzle',
+    status: 'playable',
+  },
+  {
+    moduleId: 'discovery_trails',
+    gameKey: 'discovery_trails',
+    title: 'Discovery Trails',
+    route: '/gaming/discovery-trails',
+    componentFolder: 'components/gaming/discovery-trails',
+    assetFolder: 'assets/skills/discovery-trail',
+    aliases: ['discovery-trails', 'discovery-trail'],
+    category: 'mixed',
+    status: 'playable',
+    notes: 'Assets/refinement use singular discovery-trail; route and key use plural.',
+  },
+  {
+    moduleId: 'word_storm',
+    gameKey: 'word_storm',
+    title: 'Word Storm',
+    route: '/gaming/word-storm',
+    componentFolder: 'components/gaming/word-storm',
+    assetFolder: 'assets/skills/word-storm',
+    aliases: ['word-storm'],
+    category: 'timing',
+    status: 'playable',
+  },
+  {
+    moduleId: 'memory_match',
+    gameKey: 'memory_match',
+    title: 'Memory Match',
+    route: '/skills/memory-match',
+    componentFolder: 'skills/src/modules/skills/components/games/memory-match',
+    assetFolder: 'assets/skills/memory-match',
+    aliases: ['memory-match', 'gaming/memory-match', '/gaming/memory-match'],
+    category: 'memory',
+    status: 'playable',
+    notes: '/gaming/memory-match remains a temporary compatibility route.',
+  },
+  {
+    moduleId: 'cipher_quest',
+    gameKey: 'cipher_quest',
+    title: 'Cipher Quest',
+    route: '/gaming/cipher-quest',
+    componentFolder: 'components/gaming/cipher-quest',
+    assetFolder: 'assets/skills/cipher-quest',
+    aliases: ['cipher-quest'],
+    category: 'puzzle',
+    status: 'playable',
+  },
+  {
+    moduleId: 'droplets',
+    gameKey: 'droplets',
+    title: 'Droplets',
+    route: '/gaming/droplets',
+    componentFolder: 'components/gaming/droplets',
+    assetFolder: 'assets/skills/droplets',
+    aliases: ['droplets'],
+    category: 'timing',
+    status: 'playable',
+  },
+  {
+    moduleId: 'shakerz',
+    gameKey: 'shakerz',
+    title: 'Shakerz',
+    route: '/gaming/shakerz',
+    componentFolder: 'components/gaming/shakerz',
+    assetFolder: 'assets/skills/shakerz',
+    aliases: ['shakerz'],
+    category: 'mouse',
+    status: 'playable',
+  },
+  {
+    moduleId: 'shape_shifter',
+    gameKey: 'shape_shifter',
+    title: 'Shape Shifter',
+    route: null,
+    componentFolder: null,
+    assetFolder: 'assets/skills/shape-shifter',
+    aliases: ['shape-shifter'],
+    category: 'timing',
+    status: 'missing_runtime',
+    notes: 'Expected by docs/assets but route and component are missing.',
+  },
+  {
+    moduleId: 'keyboard_expedition',
+    gameKey: 'keyboard_expedition',
+    title: 'Keyboard Expedition',
+    route: '/gaming/keyboard-expedition',
+    componentFolder: 'components/gaming/keyboard-expedition',
+    assetFolder: 'assets/skills/keyboard-expedition',
+    aliases: ['keyboard-expedition'],
+    category: 'keyboard',
+    status: 'playable',
+  },
+  {
+    moduleId: 'precision_painter_studio',
+    gameKey: 'precision_painter_studio',
+    title: 'Precision Painter Studio',
+    route: '/gaming/precision-painter-studio',
+    componentFolder: 'components/gaming/precision-painter-studio',
+    assetFolder: 'assets/skills/precision-painter-studio',
+    aliases: ['precision-painter-studio', 'precision_painter', 'precision-painter'],
+    category: 'mouse',
+    status: 'playable',
+    notes: 'Healthy Play profile has used precision_painter; contract key should stay precision_painter_studio.',
+  },
+  {
+    moduleId: 'key_current',
+    gameKey: 'key_current',
+    title: 'Key Current',
+    route: '/skills/key-current',
+    componentFolder: 'src/modules/skills/components/games/key-current',
+    assetFolder: 'src/modules/skills/assets/key-current',
+    aliases: ['key-current', 'skills/key-current', '/skills/key-current'],
+    category: 'keyboard',
+    status: 'playable',
+    notes:
+      'Single-lane elevated third-person keyboard runner (Skills Sea). Runtime is previewOnly; no backend writes.',
+  },
+  {
+    moduleId: 'keyboard_coach',
+    gameKey: 'keyboard_coach',
+    title: 'Keyboard Coach',
+    route: null,
+    componentFolder: 'components/gaming/keyboard-coach',
+    assetFolder: 'assets/skills/shared/keyboard-coach',
+    aliases: ['keyboard-coach'],
+    category: 'support',
+    status: 'shared_support',
+    notes: 'Shared support system; should not emit standalone XP/progress by default.',
+  },
+] as const satisfies readonly SkillGameRegistryEntry[];
+
+export function normalizeSkillGameLookupKey(value: string) {
+  return value.trim().toLowerCase().replace(/\\/g, '/').replace(/-/g, '_');
+}
+
+export function findSkillGameRegistryEntry(
+  keyOrAlias: SkillGameKey | string,
+): SkillGameRegistryEntry | undefined {
+  const normalized = normalizeSkillGameLookupKey(keyOrAlias);
+
+  return SKILLS_GAME_REGISTRY.find((entry) => {
+    if (normalizeSkillGameLookupKey(entry.moduleId) === normalized) return true;
+    if (normalizeSkillGameLookupKey(entry.gameKey) === normalized) return true;
+    return entry.aliases.some(
+      (alias) => normalizeSkillGameLookupKey(alias) === normalized,
+    );
+  });
+}
+
+export function requireSkillGameRegistryEntry(
+  keyOrAlias: SkillGameKey | string,
+): SkillGameRegistryEntry {
+  const entry = findSkillGameRegistryEntry(keyOrAlias);
+  if (!entry) {
+    throw new Error(`Unknown Skills game key or alias: ${keyOrAlias}`);
+  }
+  return entry;
+}
+
+export function getCanonicalSkillGameKey(keyOrAlias: SkillGameKey | string) {
+  return requireSkillGameRegistryEntry(keyOrAlias).moduleId;
+}

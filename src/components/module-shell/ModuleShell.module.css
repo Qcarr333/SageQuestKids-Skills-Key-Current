@@ -1,0 +1,171 @@
+.page {
+  width: 100%;
+  min-height: 100vh;
+  background: #04101e;
+}
+
+.artwork {
+  --module-desktop-width: 1672;
+  --module-desktop-height: 941;
+  --module-mobile-width: 887;
+  --module-mobile-height: 1774;
+  position: relative;
+  width: min(100%, calc(var(--module-desktop-width) * 1px));
+  aspect-ratio: var(--module-desktop-width) / var(--module-desktop-height);
+  margin: 0 auto;
+  overflow: hidden;
+  background: #07182a;
+}
+
+.picture {
+  position: absolute;
+  inset: 0;
+  display: block;
+}
+
+.image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.region {
+  position: absolute;
+  z-index: 10;
+  display: flex;
+  border-radius: clamp(0.2rem, 0.7vw, 0.75rem);
+  background: transparent;
+  text-decoration: none;
+}
+
+.logo {
+  left: 2%;
+  top: 0.6%;
+  width: 16.5%;
+  height: 18%;
+}
+
+.loginButton,
+.backLink {
+  position: absolute;
+  z-index: 10;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border: max(2px, 0.14vw) solid #f6ca64;
+  border-radius: 999px;
+  background: linear-gradient(180deg, #f8d979, #d59125);
+  box-shadow: 0 0.35vw 0.8vw rgba(0, 0, 0, 0.45);
+  color: #10213c;
+  font-weight: 900;
+  line-height: 1;
+  text-decoration: none;
+  text-transform: uppercase;
+}
+
+.loginButton {
+  left: 84.85%;
+  top: 2.05%;
+  width: 10.7%;
+  min-height: 5.7%;
+  font-size: clamp(0.78rem, 1.15vw, 1.25rem);
+}
+
+.backLink {
+  left: 50%;
+  bottom: 3%;
+  transform: translateX(-50%);
+  min-height: 48px;
+  padding: 0.75rem 1.15rem;
+  font-size: clamp(0.78rem, 1vw, 1.05rem);
+}
+
+.region:focus-visible,
+.loginButton:focus-visible,
+.backLink:focus-visible,
+.previewLayer button:focus-visible {
+  outline: max(3px, 0.24vw) solid #fff;
+  outline-offset: max(2px, 0.14vw);
+  box-shadow: 0 0 0 max(6px, 0.5vw) #ffb928;
+}
+
+.comingSoonBanner,
+.referenceBadge {
+  position: absolute;
+  z-index: 5;
+  left: 50%;
+  transform: translateX(-50%);
+  border: max(3px, 0.22vw) solid #ffd061;
+  background: rgba(7, 26, 50, 0.92);
+  box-shadow: 0 0.8rem 2rem rgba(0, 0, 0, 0.55);
+  color: #ffe39a;
+  font-weight: 900;
+  text-align: center;
+  text-transform: uppercase;
+}
+
+.comingSoonBanner {
+  top: 15%;
+  padding: clamp(0.75rem, 1.4vw, 1.35rem) clamp(1.4rem, 3vw, 3rem);
+  border-radius: 999px;
+  font-size: clamp(1.25rem, 2.8vw, 3rem);
+}
+
+.referenceBadge {
+  top: 10.8%;
+  padding: 0.55rem 1.2rem;
+  border-radius: 0.75rem;
+  font-size: clamp(0.82rem, 1.2vw, 1.2rem);
+}
+
+.previewLayer {
+  position: absolute;
+  z-index: 3;
+  inset: 0;
+}
+
+@media (max-width: 768px) {
+  .artwork {
+    width: min(100%, calc(var(--module-mobile-width) * 1px));
+    aspect-ratio: var(--module-mobile-width) / var(--module-mobile-height);
+  }
+
+  .logo {
+    left: 3%;
+    top: 1%;
+    width: 30%;
+    height: 8.8%;
+  }
+
+  .loginButton {
+    left: 76.1%;
+    top: 1.35%;
+    width: 18.2%;
+    min-height: 3.1%;
+    font-size: clamp(0.72rem, 2.8vw, 1rem);
+  }
+
+  .backLink {
+    left: 50%;
+    bottom: 1.7%;
+    transform: translateX(-50%);
+    min-width: 48%;
+    min-height: 48px;
+    padding: 0.75rem 1rem;
+    font-size: clamp(0.78rem, 3vw, 1rem);
+  }
+
+  .comingSoonBanner {
+    top: 13.8%;
+    width: min(82%, 24rem);
+    padding: 0.75rem 1rem;
+    font-size: clamp(1.2rem, 7vw, 2rem);
+  }
+
+  .referenceBadge {
+    top: 7.2%;
+    width: min(82%, 24rem);
+    font-size: clamp(0.75rem, 3vw, 1rem);
+  }
+}

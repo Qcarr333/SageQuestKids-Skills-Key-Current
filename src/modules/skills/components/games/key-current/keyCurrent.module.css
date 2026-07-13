@@ -1,0 +1,1027 @@
+/* ==========================================================================
+   Key Current — Skills Sea visual system (checkpoint 1C)
+   Composition: far-background plate (subtle parallax drift) → water sparkle
+   layers → 3D-perspective causeway plane with a scrolling Higgsfield cobble
+   texture → Higgsfield gate art with code-overlaid letters → Higgsfield
+   character renders. Everything remains responsive CSS/React — no flat
+   screenshot UI.
+   ========================================================================== */
+
+/* ---------- Playfield scene ---------- */
+
+.playfield {
+  position: relative;
+  overflow: hidden;
+  width: 100%;
+  height: 100%;
+  border-radius: 1.1rem;
+  background: linear-gradient(to bottom, #1040a8 0%, #0a6ed1 40%, #0891b2 100%);
+  box-shadow:
+    inset 0 0 0 2px rgba(191, 219, 254, 0.22),
+    0 18px 45px rgba(3, 22, 56, 0.55);
+}
+
+.bgPlate {
+  position: absolute;
+  inset: -2% -3%;
+  background-size: cover;
+  background-position: 50% 32%;
+  background-repeat: no-repeat;
+  animation: kcBgDrift 64s ease-in-out infinite alternate;
+}
+
+@keyframes kcBgDrift {
+  from {
+    transform: translateX(0) scale(1.02);
+  }
+  to {
+    transform: translateX(-1.6%) scale(1.05);
+  }
+}
+
+/* gentle depth: darken the very bottom so the foreground reads */
+.bgDepth {
+  position: absolute;
+  inset: 55% 0 0 0;
+  background: linear-gradient(to bottom, transparent, rgba(4, 32, 78, 0.38));
+  pointer-events: none;
+}
+
+/* twinkling water sparkles over the plate */
+.waterSparkles {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 42%;
+  bottom: 0;
+  pointer-events: none;
+  background-image:
+    radial-gradient(2.5px 2.5px at 12% 30%, rgba(255, 255, 255, 0.9), transparent 60%),
+    radial-gradient(2px 2px at 28% 68%, rgba(186, 230, 253, 0.9), transparent 60%),
+    radial-gradient(3px 3px at 44% 42%, rgba(255, 255, 255, 0.75), transparent 60%),
+    radial-gradient(2px 2px at 63% 76%, rgba(165, 243, 252, 0.9), transparent 60%),
+    radial-gradient(2.5px 2.5px at 78% 38%, rgba(255, 255, 255, 0.8), transparent 60%),
+    radial-gradient(2px 2px at 90% 62%, rgba(186, 230, 253, 0.85), transparent 60%);
+  animation: kcSparkleTwinkle 3.6s ease-in-out infinite alternate;
+}
+
+.waterSparkles2 {
+  background-image:
+    radial-gradient(2px 2px at 18% 82%, rgba(255, 255, 255, 0.8), transparent 60%),
+    radial-gradient(2.5px 2.5px at 36% 22%, rgba(165, 243, 252, 0.85), transparent 60%),
+    radial-gradient(2px 2px at 55% 58%, rgba(255, 255, 255, 0.9), transparent 60%),
+    radial-gradient(2.5px 2.5px at 70% 88%, rgba(186, 230, 253, 0.8), transparent 60%),
+    radial-gradient(2px 2px at 86% 24%, rgba(255, 255, 255, 0.85), transparent 60%);
+  animation-delay: -1.8s;
+  animation-duration: 4.4s;
+}
+
+@keyframes kcSparkleTwinkle {
+  from {
+    opacity: 0.25;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.bird {
+  position: absolute;
+  width: 26px;
+  height: 10px;
+  color: rgba(255, 255, 255, 0.92);
+  animation: kcBirdDrift linear infinite;
+  pointer-events: none;
+}
+
+@keyframes kcBirdDrift {
+  0% {
+    transform: translateX(-8vw) translateY(0);
+  }
+  50% {
+    transform: translateX(50vw) translateY(-14px);
+  }
+  100% {
+    transform: translateX(112vw) translateY(0);
+  }
+}
+
+.bubble {
+  position: absolute;
+  bottom: -20px;
+  border-radius: 9999px;
+  border: 2px solid rgba(224, 242, 254, 0.65);
+  background: rgba(186, 230, 253, 0.14);
+  animation: kcBubbleRise linear infinite;
+  pointer-events: none;
+}
+
+@keyframes kcBubbleRise {
+  from {
+    transform: translateY(0) translateX(0);
+    opacity: 0;
+  }
+  12% {
+    opacity: 0.85;
+  }
+  to {
+    transform: translateY(-58vh) translateX(14px);
+    opacity: 0;
+  }
+}
+
+/* ---------- Converging causeway (geometry from keyCurrentLaneGeometry.ts) ---------- */
+
+/*
+ * 1C.1: the causeway silhouette is a deterministic trapezoid whose edges
+ * converge to the vanishing point on the plate's sea line. The clip-path is
+ * computed in px by KeyCurrentPlayfield from the measured playfield size;
+ * this container just hosts the clipped, scrolling texture.
+ */
+.laneClip {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+}
+
+/*
+ * Higgsfield cobble texture on a tilted plane INSIDE the clip: the clip owns
+ * the exact converging outline while the rotateX projection compresses the
+ * cobbles with distance and keeps the forward-scroll motion.
+ */
+.laneTexture {
+  position: absolute;
+  left: 50%;
+  top: 40%;
+  height: 320%;
+  transform-origin: top center;
+  transform: translateX(-50%) perspective(340px) rotateX(62deg);
+  background-size: 100% 110px;
+  background-repeat: repeat-y;
+  animation: kcLaneScroll 4.2s linear infinite;
+}
+
+@keyframes kcLaneScroll {
+  from {
+    background-position-y: 0;
+  }
+  to {
+    background-position-y: 110px;
+  }
+}
+
+/* edge shading + far brightening, clipped to the causeway shape */
+.laneShading {
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(to right, rgba(62, 39, 17, 0.28), transparent 22%, transparent 78%, rgba(62, 39, 17, 0.28)),
+    linear-gradient(to bottom, rgba(196, 236, 255, 0.55), transparent 40%),
+    linear-gradient(to top, rgba(62, 39, 17, 0.14), transparent 22%);
+}
+
+/* stone edge strokes drawn along the exact trapezoid lines */
+.laneEdgeSvg {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+}
+
+.laneEdgeStroke {
+  stroke: rgba(82, 66, 46, 0.95);
+  stroke-width: 5;
+  stroke-linecap: round;
+}
+
+.laneEdgeLight {
+  stroke: rgba(232, 248, 255, 0.38);
+  stroke-width: 2.5;
+  stroke-linecap: round;
+}
+
+/* haze where the causeway meets the horizon, so it sits IN the sea */
+.laneHaze {
+  position: absolute;
+  left: 50%;
+  top: 29.6%;
+  width: min(30%, 220px);
+  height: 5.5%;
+  transform: translateX(-50%);
+  background: radial-gradient(
+    60% 100% at 50% 40%,
+    rgba(214, 240, 255, 0.95),
+    rgba(214, 240, 255, 0.35) 60%,
+    transparent 100%
+  );
+  filter: blur(5px);
+  pointer-events: none;
+  animation: kcFoamPulse 5s ease-in-out infinite alternate;
+}
+
+@keyframes kcFoamPulse {
+  from {
+    opacity: 0.65;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+/* grass tufts + starfish accents beside the causeway (foreground) */
+.pathDecor {
+  position: absolute;
+  pointer-events: none;
+  line-height: 1;
+  filter: drop-shadow(0 2px 2px rgba(3, 22, 56, 0.35));
+}
+
+.grassTuft {
+  width: 0;
+  height: 0;
+}
+
+.grassTuft::before {
+  content: '';
+  position: absolute;
+  left: -9px;
+  bottom: 0;
+  width: 18px;
+  height: 14px;
+  background:
+    radial-gradient(4px 12px at 4px 14px, #4e9a3f 60%, transparent 70%),
+    radial-gradient(4px 14px at 9px 14px, #63b24f 60%, transparent 70%),
+    radial-gradient(4px 11px at 14px 14px, #3f8735 60%, transparent 70%);
+}
+
+.starfish {
+  width: 14px;
+  height: 14px;
+  background: #e8823c;
+  clip-path: polygon(
+    50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%,
+    50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%
+  );
+}
+
+/* ---------- Gate (Higgsfield art + code-overlaid letter) ---------- */
+
+/*
+ * Gate placement is DERIVED from keyCurrentLaneGeometry.ts (keep in sync):
+ *   y(p)     = gateFarY + (gateNearY - gateFarY) * p   = 42.5% + 36.5% * p
+ *   scale(p) = (y(p) - horizonY) / (gateNearY - horizonY)
+ *            = 0.0842 + 0.9158 * p
+ * Width at the near line (scale 1) matches gateNear {215px, 60vw, 340px};
+ * the road under it is that width / pillarOverhang (1.15), so the gate's
+ * footprint tracks the road width at every depth and both converge to the
+ * same vanishing point on the horizon.
+ */
+.obstacle {
+  --kc-progress: 0;
+  position: absolute;
+  left: 50%;
+  top: calc(45% + 34% * var(--kc-progress));
+  transform: translate(-50%, -100%)
+   scale(calc(0.0941 + 0.9059 * var(--kc-progress)));
+  transform-origin: bottom center;
+  z-index: 12;
+  width: clamp(215px, 60vw, 340px);
+  pointer-events: none;
+  container-type: inline-size;
+}
+
+/*
+ * Upcoming gates queue on the horizon ridge, slightly larger than true
+ * perspective would allow (matching the mobile design target) so their
+ * letters stay legible; opacity/level mutes them below the active gate.
+ */
+.obstacleUpcoming1 {
+  top: 34.4%;
+  transform: translate(-50%, -100%) scale(0.24);
+  opacity: 0.8;
+  filter: saturate(0.85) brightness(0.95);
+  z-index: 11;
+}
+
+.obstacleUpcoming2 {
+  top: 33.2%;
+  transform: translate(-50%, -100%) scale(0.17);
+  opacity: 0.5;
+  filter: saturate(0.7) brightness(0.9);
+  z-index: 10;
+}
+
+.gateArtWrap {
+  position: relative;
+}
+
+.gateShake {
+  animation: kcGateShake 0.55s ease-in-out;
+}
+
+@keyframes kcGateShake {
+  0%, 100% {
+    transform: translateX(0) rotate(0deg);
+  }
+  20% {
+    transform: translateX(-7px) rotate(-1.2deg);
+  }
+  45% {
+    transform: translateX(6px) rotate(1deg);
+  }
+  70% {
+    transform: translateX(-4px) rotate(-0.7deg);
+  }
+}
+
+/* cleared: doorway light burst + gate brightens and dissolves */
+.gateOpenFx {
+  animation: kcGateOpenFx 0.62s ease-in forwards;
+}
+
+@keyframes kcGateOpenFx {
+  0% {
+    filter: brightness(1);
+    transform: scale(1);
+    opacity: 1;
+  }
+  35% {
+    filter: brightness(1.45) saturate(1.1);
+    transform: scale(1.06);
+    opacity: 1;
+  }
+  100% {
+    filter: brightness(1.7);
+    transform: scale(1.16);
+    opacity: 0;
+  }
+}
+
+.gateDoorFlash {
+  position: absolute;
+  left: 50%;
+  top: 52%;
+  width: 58%;
+  height: 46%;
+  transform: translate(-50%, -50%);
+  border-radius: 45% 45% 12% 12%;
+  background: radial-gradient(
+    closest-side,
+    rgba(255, 251, 220, 0.95),
+    rgba(253, 224, 71, 0.55) 55%,
+    transparent 100%
+  );
+  animation: kcDoorFlash 0.62s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes kcDoorFlash {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.5);
+  }
+  35% {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.3);
+  }
+}
+
+/* pulsing glow behind the required letter (over the doors) */
+.gateLetterGlow {
+  position: absolute;
+  left: 50%;
+  top: 51%;
+  width: 46%;
+  height: 38%;
+  transform: translate(-50%, -50%);
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, rgba(253, 224, 71, 0.75), transparent 75%);
+  animation: kcGlowPulse 1.1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+@keyframes kcGlowPulse {
+  0%, 100% {
+    opacity: 0.4;
+    transform: translate(-50%, -50%) scale(0.94);
+  }
+  50% {
+    opacity: 0.95;
+    transform: translate(-50%, -50%) scale(1.1);
+  }
+}
+
+.gateLetter {
+  position: absolute;
+  left: 50%;
+  top: 51%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  gap: 0.06em;
+  font-weight: 900;
+  font-family: 'Segoe UI', 'Trebuchet MS', system-ui, sans-serif;
+  font-size: 33cqi;
+  line-height: 1;
+  background: linear-gradient(to bottom, #fceabb 12%, #f2c14e 55%, #c98a2e 92%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 2px 0 #6b4a12) drop-shadow(0 5px 8px rgba(15, 36, 64, 0.75));
+  animation: kcLetterBreath 1.1s ease-in-out infinite;
+  pointer-events: none;
+}
+
+.gateLetterMulti {
+  font-size: 18cqi;
+  letter-spacing: 0.04em;
+}
+
+.gateLetterDone {
+  opacity: 0.32;
+}
+
+@keyframes kcLetterBreath {
+  0%, 100% {
+    transform: translate(-50%, -50%) scale(1);
+  }
+  50% {
+    transform: translate(-50%, -50%) scale(1.07);
+  }
+}
+
+.gateLetterUrgent .gateLetter {
+  animation-duration: 0.55s;
+}
+
+.gateLetterUrgent .gateLetterGlow {
+  animation-duration: 0.55s;
+}
+
+.gateSparkle {
+  position: absolute;
+  left: 50%;
+  top: 46%;
+  transform: translate(-50%, -50%);
+  font-size: clamp(2rem, 8vw, 3rem);
+  animation: kcSparklePop 0.55s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes kcSparklePop {
+  0% {
+    transform: translate(-50%, -50%) scale(0.4);
+    opacity: 1;
+  }
+  100% {
+    transform: translate(-50%, -50%) scale(2.2);
+    opacity: 0;
+  }
+}
+
+/* ---------- Character ---------- */
+
+.character {
+  position: absolute;
+  left: 50%;
+  bottom: 2.5%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: clamp(92px, 24vw, 138px);
+  pointer-events: none;
+}
+
+.characterShadow {
+  position: absolute;
+  left: 50%;
+  bottom: -5px;
+  width: 74%;
+  height: 15px;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: rgba(3, 22, 56, 0.42);
+  filter: blur(3px);
+}
+
+.characterBody {
+  position: relative;
+}
+
+.characterRun .characterBody {
+  animation: kcRunBob 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes kcRunBob {
+  from {
+    transform: translateY(0) rotate(-1.1deg) scale(1, 1);
+  }
+  to {
+    transform: translateY(-8px) rotate(1.1deg) scale(0.99, 1.01);
+  }
+}
+
+.characterRun .characterShadow {
+  animation: kcShadowPulse 0.4s ease-in-out infinite alternate;
+}
+
+@keyframes kcShadowPulse {
+  from {
+    transform: translateX(-50%) scaleX(1);
+    opacity: 1;
+  }
+  to {
+    transform: translateX(-50%) scaleX(0.86);
+    opacity: 0.75;
+  }
+}
+
+.characterIdle .characterBody {
+  animation: kcIdleBreathe 2.4s ease-in-out infinite alternate;
+}
+
+@keyframes kcIdleBreathe {
+  from {
+    transform: translateY(0) scale(1);
+  }
+  to {
+    transform: translateY(-3px) scale(1.015);
+  }
+}
+
+.characterCollide .characterBody {
+  animation: kcCollide 0.85s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+@keyframes kcCollide {
+  0% {
+    transform: translateY(-4px) scale(1);
+  }
+  18% {
+    transform: translateY(6px) scale(1.22, 0.62);
+  }
+  45% {
+    transform: translateY(26px) scale(0.95, 1.07);
+  }
+  70% {
+    transform: translateY(14px) scale(1.05, 0.97);
+  }
+  100% {
+    transform: translateY(0) scale(1);
+  }
+}
+
+.characterCelebrate .characterBody {
+  animation: kcCelebrate 0.8s ease-in-out infinite;
+}
+
+@keyframes kcCelebrate {
+  0%, 100% {
+    transform: translateY(0) rotate(-2.5deg);
+  }
+  50% {
+    transform: translateY(-16px) rotate(2.5deg);
+  }
+}
+
+.bonkStars {
+  position: absolute;
+  top: -22px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 6px;
+  font-size: 1.3rem;
+  color: #fde047;
+  z-index: 2;
+  animation: kcBonkStars 0.85s ease-out forwards;
+  pointer-events: none;
+}
+
+@keyframes kcBonkStars {
+  0% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(6px) scale(0.6) rotate(0deg);
+  }
+  30% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+    transform: translateX(-50%) translateY(-20px) scale(1.3) rotate(18deg);
+  }
+}
+
+/* ---------- HUD (deep-blue rounded panels with light rims) ---------- */
+
+.hudPanel {
+  border-radius: 0.9rem;
+  border: 1.5px solid rgba(147, 197, 253, 0.55);
+  background:
+    linear-gradient(to bottom, rgba(37, 99, 235, 0.92), rgba(23, 58, 138, 0.94));
+  box-shadow:
+    inset 0 1.5px 0 rgba(219, 234, 254, 0.5),
+    0 4px 12px rgba(3, 22, 56, 0.45);
+}
+
+.hudButton {
+  display: grid;
+  place-items: center;
+  width: 2.9rem;
+  height: 2.9rem;
+  flex: none;
+  border-radius: 9999px;
+  border: 2px solid rgba(147, 197, 253, 0.65);
+  background: radial-gradient(circle at 50% 32%, #3b82f6, #1e3a8a 78%);
+  color: #e0f2fe;
+  font-size: 1.05rem;
+  box-shadow:
+    inset 0 2px 0 rgba(219, 234, 254, 0.45),
+    0 4px 10px rgba(3, 22, 56, 0.5);
+  transition: transform 0.12s ease, filter 0.15s ease;
+}
+
+.hudButton:hover {
+  filter: brightness(1.12);
+}
+
+.hudButton:active {
+  transform: translateY(2px);
+}
+
+.hudProgressTrack {
+  height: 0.55rem;
+  width: 100%;
+  overflow: hidden;
+  border-radius: 9999px;
+  background: rgba(7, 30, 84, 0.85);
+  box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.5);
+}
+
+.hudProgressFill {
+  height: 100%;
+  border-radius: 9999px;
+  background: linear-gradient(to bottom, #86efac, #22c55e 55%, #15803d);
+  box-shadow: inset 0 1px 0 rgba(240, 253, 244, 0.7);
+  transition: width 0.3s ease;
+}
+
+/* ---------- Keyboard helper (light frosted panel, 3D keycaps) ---------- */
+
+.helperPanel {
+  width: 100%;
+  border-radius: 1.1rem;
+  border: 1.5px solid rgba(191, 219, 254, 0.8);
+  background: linear-gradient(
+    to bottom,
+    rgba(224, 242, 254, 0.92),
+    rgba(186, 219, 253, 0.88)
+  );
+  box-shadow:
+    inset 0 1.5px 0 rgba(255, 255, 255, 0.8),
+    0 6px 18px rgba(3, 22, 56, 0.4);
+  backdrop-filter: blur(4px);
+}
+
+.helperKey {
+  position: relative;
+  display: grid;
+  place-items: center;
+  border-radius: 0.6rem;
+  border: 1px solid rgba(148, 163, 184, 0.55);
+  background: linear-gradient(to bottom, #ffffff, #e2e8f0);
+  color: #64748b;
+  font-weight: 800;
+  user-select: none;
+  -webkit-tap-highlight-color: transparent;
+  box-shadow:
+    0 2.5px 0 rgba(148, 163, 184, 0.75),
+    0 4px 6px rgba(3, 22, 56, 0.12);
+  transition: transform 0.1s ease, box-shadow 0.1s ease;
+}
+
+.helperKey:active {
+  transform: translateY(2px);
+  box-shadow: 0 0.5px 0 rgba(148, 163, 184, 0.75);
+}
+
+/* stage keys that are not the current target: friendly blue */
+.helperKeyActive {
+  border: 1.5px solid #1e40af;
+  background: linear-gradient(to bottom, #3b82f6, #1d4ed8);
+  color: #eff6ff;
+  box-shadow:
+    0 4px 0 #1e3a8a,
+    0 7px 12px rgba(3, 22, 56, 0.35);
+}
+
+/* the key the learner needs right now: green glow */
+.helperKeyTarget {
+  border: 2px solid #bbf7d0;
+  background: linear-gradient(to bottom, #4ade80, #16a34a);
+  color: #f0fdf4;
+  text-shadow: 0 1px 2px rgba(20, 83, 45, 0.5);
+  animation: kcTargetGlow 0.95s ease-in-out infinite;
+}
+
+@keyframes kcTargetGlow {
+  0%, 100% {
+    box-shadow:
+      0 4px 0 #15803d,
+      0 0 0 0 rgba(134, 239, 172, 0.9),
+      0 7px 14px rgba(22, 101, 52, 0.4);
+    transform: scale(1);
+  }
+  50% {
+    box-shadow:
+      0 4px 0 #15803d,
+      0 0 0 12px rgba(134, 239, 172, 0),
+      0 7px 14px rgba(22, 101, 52, 0.4);
+    transform: scale(1.05);
+  }
+}
+
+.helperKeyWrongFlash {
+  animation: kcWrongFlash 0.45s ease-out;
+}
+
+@keyframes kcWrongFlash {
+  0%, 60% {
+    background: linear-gradient(to bottom, #f87171, #dc2626);
+    border-color: #fecaca;
+    color: #fef2f2;
+    transform: translateX(0);
+  }
+  15% {
+    transform: translateX(-4px);
+  }
+  35% {
+    transform: translateX(4px);
+  }
+  100% {
+    transform: translateX(0);
+  }
+}
+
+.helperKeyCorrectFlash {
+  animation: kcCorrectFlash 0.5s ease-out;
+}
+
+@keyframes kcCorrectFlash {
+  0%, 55% {
+    background: linear-gradient(to bottom, #86efac, #22c55e);
+    border-color: #dcfce7;
+    color: #14532d;
+    transform: scale(1.14);
+  }
+  100% {
+    transform: scale(1);
+  }
+}
+
+.homeBump::after {
+  content: '';
+  position: absolute;
+  bottom: 13%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 34%;
+  height: 2.5px;
+  border-radius: 9999px;
+  background: currentColor;
+  opacity: 0.55;
+}
+
+.handChip {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  border-radius: 9999px;
+  padding: 0.22rem 0.65rem;
+  font-size: 0.68rem;
+  font-weight: 900;
+  letter-spacing: 0.03em;
+  color: #ffffff;
+  box-shadow: 0 2px 5px rgba(3, 22, 56, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.4);
+}
+
+.handChipLeft {
+  background: linear-gradient(to bottom, #4ade80, #16a34a);
+}
+
+.handChipRight {
+  background: linear-gradient(to bottom, #60a5fa, #2563eb);
+}
+
+/* ---------- Landing / panels ---------- */
+
+.seaPanel {
+  border-radius: 1.15rem;
+  border: 1.5px solid rgba(147, 197, 253, 0.5);
+  background: linear-gradient(
+    to bottom,
+    rgba(23, 58, 138, 0.78),
+    rgba(12, 36, 96, 0.82)
+  );
+  box-shadow:
+    inset 0 1.5px 0 rgba(219, 234, 254, 0.35),
+    0 8px 24px rgba(3, 22, 56, 0.45);
+  backdrop-filter: blur(3px);
+}
+
+.goldButton {
+  border-radius: 1rem;
+  border: 2px solid #fde68a;
+  background: linear-gradient(to bottom, #fcd34d, #f59e0b 60%, #d97706);
+  color: #451a03;
+  font-weight: 900;
+  text-shadow: 0 1px 0 rgba(255, 251, 235, 0.6);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 251, 235, 0.7),
+    0 5px 0 #92400e,
+    0 12px 24px rgba(3, 22, 56, 0.45);
+  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.12s ease;
+}
+
+.goldButton:hover {
+  filter: brightness(1.06);
+}
+
+.goldButton:active {
+  transform: translateY(4px);
+  box-shadow:
+    inset 0 2px 0 rgba(255, 251, 235, 0.7),
+    0 1px 0 #92400e,
+    0 6px 12px rgba(3, 22, 56, 0.45);
+}
+
+.blueButton {
+  border-radius: 1rem;
+  border: 1.5px solid rgba(147, 197, 253, 0.6);
+  background: linear-gradient(to bottom, #2563eb, #1e3a8a);
+  color: #dbeafe;
+  font-weight: 800;
+  box-shadow:
+    inset 0 1.5px 0 rgba(219, 234, 254, 0.45),
+    0 4px 0 #172554,
+    0 10px 20px rgba(3, 22, 56, 0.4);
+  transition: transform 0.12s ease, filter 0.15s ease, box-shadow 0.12s ease;
+}
+
+.blueButton:hover {
+  filter: brightness(1.1);
+}
+
+.blueButton:active {
+  transform: translateY(3px);
+  box-shadow:
+    inset 0 1.5px 0 rgba(219, 234, 254, 0.45),
+    0 1px 0 #172554;
+}
+
+.titleWave {
+  background: linear-gradient(to bottom, #fef9c3 15%, #fde047 45%, #f59e0b 90%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+  filter: drop-shadow(0 3px 0 #1d4ed8) drop-shadow(0 6px 0 rgba(23, 37, 84, 0.65))
+    drop-shadow(0 12px 22px rgba(3, 22, 56, 0.6));
+}
+
+.titleBadge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  border-radius: 9999px;
+  border: 1.5px solid rgba(253, 224, 71, 0.55);
+  background: linear-gradient(to bottom, rgba(30, 64, 175, 0.85), rgba(15, 40, 107, 0.9));
+  padding: 0.3rem 0.9rem;
+  font-size: 0.7rem;
+  font-weight: 900;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: #fde68a;
+  box-shadow: inset 0 1px 0 rgba(219, 234, 254, 0.35), 0 4px 10px rgba(3, 22, 56, 0.4);
+}
+
+.characterCard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.25rem;
+  border-radius: 0.9rem;
+  border: 2px solid rgba(147, 197, 253, 0.35);
+  background: linear-gradient(to bottom, rgba(30, 64, 175, 0.5), rgba(15, 40, 107, 0.62));
+  padding: 0.45rem 0.25rem 0.4rem;
+  transition: transform 0.12s ease, border-color 0.15s ease, background 0.15s ease;
+}
+
+.characterCard:hover {
+  transform: translateY(-2px);
+  border-color: rgba(191, 219, 254, 0.7);
+}
+
+.characterCardSelected {
+  border-color: #fcd34d;
+  background: linear-gradient(to bottom, rgba(37, 99, 235, 0.65), rgba(23, 58, 138, 0.78));
+  box-shadow: 0 0 0 3px rgba(252, 211, 77, 0.35), 0 6px 14px rgba(3, 22, 56, 0.45);
+}
+
+/* selected-character pedestal on the landing page */
+.previewPedestal {
+  position: absolute;
+  left: 50%;
+  bottom: 2px;
+  width: 78%;
+  height: 16px;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: radial-gradient(closest-side, rgba(226, 200, 150, 0.95), rgba(180, 148, 100, 0.65) 70%, transparent);
+  box-shadow: 0 3px 8px rgba(3, 22, 56, 0.4);
+}
+
+/* ---------- Prompts, countdown, overlays ---------- */
+
+.voicePrompt {
+  animation: kcPromptPop 0.35s ease-out;
+}
+
+@keyframes kcPromptPop {
+  from {
+    transform: translateX(-50%) scale(0.7);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(-50%) scale(1);
+    opacity: 1;
+  }
+}
+
+.countdownText {
+  animation: kcCountdownPop 0.9s ease-in-out;
+}
+
+@keyframes kcCountdownPop {
+  0% {
+    transform: scale(0.3);
+    opacity: 0;
+  }
+  35% {
+    transform: scale(1.15);
+    opacity: 1;
+  }
+  100% {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+/* ---------- Pause / reduced motion ---------- */
+
+.paused *,
+.paused *::before,
+.paused *::after {
+  animation-play-state: paused !important;
+}
+
+.reducedMotion .bgPlate,
+.reducedMotion .waterSparkles,
+.reducedMotion .laneHaze,
+.reducedMotion .laneTexture,
+.reducedMotion .bird,
+.reducedMotion .bubble {
+  animation: none;
+}
+
+.reducedMotion .characterRun .characterBody,
+.reducedMotion .characterRun .characterShadow,
+.reducedMotion .characterCelebrate .characterBody {
+  animation: none;
+}
+
+.reducedMotion .gateShake {
+  animation: none;
+}
+
+.reducedMotion .gateLetter,
+.reducedMotion .gateLetterGlow {
+  animation: none;
+}
+
+.reducedMotion .characterCollide .characterBody {
+  animation: kcCollideReduced 0.5s ease-out forwards;
+}
+
+@keyframes kcCollideReduced {
+  0% {
+    transform: scale(1);
+  }
+  40% {
+    transform: scale(1.05, 0.92);
+  }
+  100% {
+    transform: scale(1);
+  }
+}

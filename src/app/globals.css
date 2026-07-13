@@ -1,0 +1,25 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  color-scheme: light;
+}
+
+html,
+body {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  font-family:
+    'Segoe UI',
+    'Trebuchet MS',
+    ui-rounded,
+    system-ui,
+    -apple-system,
+    sans-serif;
+  background: #06283d;
+  color: #f0f9ff;
+}

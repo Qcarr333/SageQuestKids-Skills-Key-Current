@@ -1,0 +1,146 @@
+{
+  "schemaVersion": "key-current-mascot-atlas-v1",
+  "characterId": "owl",
+  "displayName": "Orbit the Owl",
+  "image": "key-current-mascot-owl-v2.png",
+  "imageWidth": 4096,
+  "imageHeight": 2048,
+  "frameWidth": 512,
+  "frameHeight": 512,
+  "columns": 8,
+  "rows": 4,
+  "totalFrames": 32,
+  "background": "transparent",
+  "alphaRequired": true,
+  "anchor": {
+    "description": "Feet/base center anchor used for lane placement.",
+    "x": 256,
+    "y": 430
+  },
+  "safePadding": {
+    "top": 32,
+    "right": 32,
+    "bottom": 32,
+    "left": 32
+  },
+  "frames": {
+    "select_idle_front": { "index": 1, "row": 1, "column": 1, "x": 0, "y": 0, "w": 512, "h": 512 },
+    "select_idle_blink": { "index": 2, "row": 1, "column": 2, "x": 512, "y": 0, "w": 512, "h": 512 },
+    "select_wave_front": { "index": 3, "row": 1, "column": 3, "x": 1024, "y": 0, "w": 512, "h": 512 },
+    "select_ready_front": { "index": 4, "row": 1, "column": 4, "x": 1536, "y": 0, "w": 512, "h": 512 },
+    "celebrate_front_01": { "index": 5, "row": 1, "column": 5, "x": 2048, "y": 0, "w": 512, "h": 512 },
+    "celebrate_front_02": { "index": 6, "row": 1, "column": 6, "x": 2560, "y": 0, "w": 512, "h": 512 },
+    "celebrate_front_03": { "index": 7, "row": 1, "column": 7, "x": 3072, "y": 0, "w": 512, "h": 512 },
+    "portrait_static": { "index": 8, "row": 1, "column": 8, "x": 3584, "y": 0, "w": 512, "h": 512 },
+
+    "run_rear_01": { "index": 9, "row": 2, "column": 1, "x": 0, "y": 512, "w": 512, "h": 512 },
+    "run_rear_02": { "index": 10, "row": 2, "column": 2, "x": 512, "y": 512, "w": 512, "h": 512 },
+    "run_rear_03": { "index": 11, "row": 2, "column": 3, "x": 1024, "y": 512, "w": 512, "h": 512 },
+    "run_rear_04": { "index": 12, "row": 2, "column": 4, "x": 1536, "y": 512, "w": 512, "h": 512 },
+    "run_rear_05": { "index": 13, "row": 2, "column": 5, "x": 2048, "y": 512, "w": 512, "h": 512 },
+    "run_rear_06": { "index": 14, "row": 2, "column": 6, "x": 2560, "y": 512, "w": 512, "h": 512 },
+    "run_rear_07": { "index": 15, "row": 2, "column": 7, "x": 3072, "y": 512, "w": 512, "h": 512 },
+    "run_rear_08": { "index": 16, "row": 2, "column": 8, "x": 3584, "y": 512, "w": 512, "h": 512 },
+
+    "impact_01": { "index": 17, "row": 3, "column": 1, "x": 0, "y": 1024, "w": 512, "h": 512 },
+    "squash_01": { "index": 18, "row": 3, "column": 2, "x": 512, "y": 1024, "w": 512, "h": 512 },
+    "flattened_01": { "index": 19, "row": 3, "column": 3, "x": 1024, "y": 1024, "w": 512, "h": 512 },
+    "recoil_01": { "index": 20, "row": 3, "column": 4, "x": 1536, "y": 1024, "w": 512, "h": 512 },
+    "recoil_02": { "index": 21, "row": 3, "column": 5, "x": 2048, "y": 1024, "w": 512, "h": 512 },
+    "recover_01": { "index": 22, "row": 3, "column": 6, "x": 2560, "y": 1024, "w": 512, "h": 512 },
+    "recover_02": { "index": 23, "row": 3, "column": 7, "x": 3072, "y": 1024, "w": 512, "h": 512 },
+    "bonk_stars_or_bubbles": { "index": 24, "row": 3, "column": 8, "x": 3584, "y": 1024, "w": 512, "h": 512 },
+
+    "victory_rear_01": { "index": 25, "row": 4, "column": 1, "x": 0, "y": 1536, "w": 512, "h": 512 },
+    "victory_rear_02": { "index": 26, "row": 4, "column": 2, "x": 512, "y": 1536, "w": 512, "h": 512 },
+    "turn_to_front_01": { "index": 27, "row": 4, "column": 3, "x": 1024, "y": 1536, "w": 512, "h": 512 },
+    "turn_to_front_02": { "index": 28, "row": 4, "column": 4, "x": 1536, "y": 1536, "w": 512, "h": 512 },
+    "stage_complete_front": { "index": 29, "row": 4, "column": 5, "x": 2048, "y": 1536, "w": 512, "h": 512 },
+    "gentle_retry_pose": { "index": 30, "row": 4, "column": 6, "x": 2560, "y": 1536, "w": 512, "h": 512 },
+    "reduced_motion_idle": { "index": 31, "row": 4, "column": 7, "x": 3072, "y": 1536, "w": 512, "h": 512 },
+    "shadow_blob": { "index": 32, "row": 4, "column": 8, "x": 3584, "y": 1536, "w": 512, "h": 512 }
+  },
+  "animations": {
+    "select_idle": {
+      "frames": ["select_idle_front", "select_idle_blink"],
+      "fps": 2,
+      "loop": true
+    },
+    "select_wave": {
+      "frames": ["select_idle_front", "select_wave_front", "select_ready_front"],
+      "fps": 6,
+      "loop": false
+    },
+    "run_rear": {
+      "frames": [
+        "run_rear_01",
+        "run_rear_02",
+        "run_rear_03",
+        "run_rear_04",
+        "run_rear_05",
+        "run_rear_06",
+        "run_rear_07",
+        "run_rear_08"
+      ],
+      "fps": 10,
+      "loop": true
+    },
+    "collision": {
+      "frames": [
+        "impact_01",
+        "squash_01",
+        "flattened_01",
+        "recoil_01",
+        "recoil_02",
+        "recover_01",
+        "recover_02"
+      ],
+      "fps": 10,
+      "loop": false
+    },
+    "celebrate": {
+      "frames": [
+        "celebrate_front_01",
+        "celebrate_front_02",
+        "celebrate_front_03",
+        "stage_complete_front"
+      ],
+      "fps": 6,
+      "loop": false
+    },
+    "victory_rear": {
+      "frames": ["victory_rear_01", "victory_rear_02"],
+      "fps": 4,
+      "loop": true
+    },
+    "turn_to_front": {
+      "frames": ["turn_to_front_01", "turn_to_front_02", "stage_complete_front"],
+      "fps": 6,
+      "loop": false
+    },
+    "gentle_retry": {
+      "frames": ["gentle_retry_pose", "reduced_motion_idle"],
+      "fps": 3,
+      "loop": true
+    },
+    "reduced_motion_idle": {
+      "frames": ["reduced_motion_idle"],
+      "fps": 1,
+      "loop": true
+    }
+  },
+  "runtimeNotes": {
+    "requiredForKeyCurrent1B": [
+      "run_rear",
+      "collision",
+      "select_idle",
+      "celebrate"
+    ],
+    "doNotUseIf": [
+      "image dimensions are not 4096x2048",
+      "alpha is fully opaque",
+      "checkerboard background is baked into pixels",
+      "frame cells are not exactly 512x512"
+    ]
+  }
+}
