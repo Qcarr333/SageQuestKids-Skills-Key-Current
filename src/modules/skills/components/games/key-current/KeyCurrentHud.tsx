@@ -26,9 +26,8 @@ const RUN_LABEL: Record<KeyCurrentRunType, string> = {
 
 /*
  * Track A is guided practice: no fail state, so the HUD deliberately shows
- * NO bump/collision counter during the run (a child mid-practice should
- * never stare at a mistake tally). Gentle "practice bumps" appear only in
- * the end-of-stage summary.
+ * no bump/collision counter during the run. Gentle "practice bumps" appear
+ * only in the end-of-stage summary.
  */
 export function KeyCurrentHud({
   stage,
@@ -55,11 +54,13 @@ export function KeyCurrentHud({
         {paused ? '▶' : '⏸'}
       </button>
 
-      {/* center stage panel (ref: Home Base • Stage 1 with star progress) */}
       <div className={`${styles.hudPanel} min-w-0 flex-1 px-3 py-1.5`}>
         <div className="flex items-center justify-between gap-2 text-[10px] font-black uppercase tracking-wider text-blue-100 sm:text-xs">
           <span className="truncate">
-            Home Base · Stage 1 <span className="normal-case text-blue-200/85">— {RUN_LABEL[runType]}</span>
+            Home Base · Stage {stage.stageNumber}{' '}
+            <span className="normal-case text-blue-200/85">
+              — {RUN_LABEL[runType]}
+            </span>
           </span>
           <span className="flex-none tabular-nums text-amber-300">
             {obstaclesCleared}/{obstaclesTotal}
@@ -85,7 +86,6 @@ export function KeyCurrentHud({
         </div>
       </div>
 
-      {/* difficulty */}
       <div
         className={`${styles.hudPanel} hidden flex-none items-center px-3 sm:flex`}
       >

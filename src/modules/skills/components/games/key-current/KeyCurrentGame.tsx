@@ -35,9 +35,14 @@ import { buildRunObstacles, countRequiredInputs } from './keyCurrentSequences';
 import {
   KEY_CURRENT_CHARACTERS,
   KEY_CURRENT_DIFFICULTIES,
-  TRACK_A_STAGE_1,
+  getCurrentStage,
+  getCurrentTrack,
+  getFirstIncompleteTrackAStage,
   getKeyCurrentCharacter,
   getKeyCurrentDifficulty,
+  getNextStage,
+  isTrackAComplete,
+  isTrackAStageUnlocked,
 } from './keyCurrentTracks';
 import styles from './keyCurrent.module.css';
 import type { SkillPayloadPreview } from '../../../lib/runtime/skillsRuntimeTypes';
@@ -51,6 +56,7 @@ import type {
   KeyCurrentRunSummary,
   KeyCurrentRunType,
   KeyCurrentSettings,
+  KeyCurrentStage,
 } from './keyCurrentTypes';
 
 const GAME_KEY = 'key_current';
@@ -87,20 +93,43 @@ export function KeyCurrentGame() {
 
 function KeyCurrentExperience() {
   const runtime = useSkillsGameRuntime();
-  const stage = TRACK_A_STAGE_1;
+  const trackA = useMemo(() => getCurrentTrack('track_a_home_base'), []);
+  const trackAStages = useMemo(() => trackA?.stages ?? [], [trackA]);
 
   /* ---------- settings + saved local preview progress ---------- */
 
   const [settings, setSettings] = useState<KeyCurrentSettings>(DEFAULT_SETTINGS);
   const [savedXp, setSavedXp] = useState(0);
   const [savedLevel, setSavedLevel] = useState(1);
-  const [stageCompletedBefore, setStageCompletedBefore] = useState(false);
+  const [completedStageIds, setCompletedStageIds] = useState<string[]>([]);
+  const [bestAccuracy, setBestAccuracy] = useState<Record<string, number>>({});
+  const [currentStageId, setCurrentStageId] = useState(
+    'track_a_stage_1_f_j',
+  );
+  const stage = useMemo(() => getCurrentStage(currentStageId), [currentStageId]);
+  const trackAComplete = isTrackAComplete(completedStageIds);
 
   useEffect(() => {
     const progress = getUserGameProgress(GAME_KEY);
+    const completed = progress.completedLessons.filter((stageId) =>
+      trackAStages.some((trackStage) => trackStage.stageId === stageId),
+    );
+    const savedStageId =
+      typeof progress.settings.currentStageId === 'string'
+        ? progress.settings.currentStageId
+        : null;
+    const fallbackStage = getFirstIncompleteTrackAStage(completed);
+    const savedStageIsUnlocked = savedStageId
+      ? isTrackAStageUnlocked(savedStageId, completed)
+      : false;
+
     setSavedXp(progress.xp);
     setSavedLevel(progress.level);
-    setStageCompletedBefore(progress.completedLessons.includes(stage.stageId));
+    setCompletedStageIds(completed);
+    setBestAccuracy(progress.bestAccuracy);
+    setCurrentStageId(
+      savedStageId && savedStageIsUnlocked ? savedStageId : fallbackStage.stageId,
+    );
     setSettings((current) => ({
       ...current,
       musicEnabled:
@@ -126,7 +155,7 @@ function KeyCurrentExperience() {
         ? (progress.settings.characterId as KeyCurrentSettings['characterId'])
         : current.characterId,
     }));
-  }, [stage.stageId]);
+  }, [trackAStages]);
 
   const persistSettings = useCallback((next: KeyCurrentSettings) => {
     const progress = getUserGameProgress(GAME_KEY);
@@ -139,6 +168,17 @@ function KeyCurrentExperience() {
         voiceHelpEnabled: next.voiceHelpEnabled,
         difficulty: next.difficulty,
         characterId: next.characterId,
+      },
+    });
+  }, []);
+
+  const persistCurrentStage = useCallback((stageId: string) => {
+    const progress = getUserGameProgress(GAME_KEY);
+    saveUserGameProgress({
+      ...progress,
+      settings: {
+        ...progress.settings,
+        currentStageId: stageId,
       },
     });
   }, []);
@@ -181,6 +221,7 @@ function KeyCurrentExperience() {
   const activeIndexRef = useRef(activeIndex);
   const runTypeRef = useRef(runType);
   const statsRef = useRef<KeyCurrentRunStats>(createRunStats('guided_practice'));
+  const activeStageRef = useRef<KeyCurrentStage>(stage);
   const progressRef = useRef(0);
   const modeRef = useRef<'approach' | 'recover' | 'hold'>('hold');
   const inputLockedRef = useRef(false);
@@ -336,6 +377,7 @@ function KeyCurrentExperience() {
     setCharacterAnim('celebrate');
 
     const stats = statsRef.current;
+    const stageForRun = activeStageRef.current;
     stats.durationMs = runtime.getRoundDurationMs();
     runtime.endRound();
     stopMusic(false);
@@ -345,7 +387,7 @@ function KeyCurrentExperience() {
 
     const roundResult = runtime.createRoundResult({
       activityType: isGuided ? 'lesson_complete' : 'challenge_complete',
-      lessonId: `${GAME_KEY}:${stage.stageId}:${stats.runType}`,
+      lessonId: `${GAME_KEY}:${stageForRun.stageId}:${stats.runType}`,
       status: summary.completionType === 'mastered' ? 'mastered' : 'completed',
       score: summary.accuracy,
       accuracy: summary.accuracy,
@@ -355,8 +397,8 @@ function KeyCurrentExperience() {
       xpProposed: summary.xpProposed,
       mistakeCount: stats.incorrectInputs,
       metadata: runtime.createPreviewMetadata({
-        stageId: stage.stageId,
-        trackId: stage.trackId,
+        stageId: stageForRun.stageId,
+        trackId: stageForRun.trackId,
         runType: stats.runType,
         selectedCharacter: settingsRef.current.characterId,
         difficulty: settingsRef.current.difficulty,
@@ -365,10 +407,16 @@ function KeyCurrentExperience() {
         correctFirstAttempts: stats.correctFirstAttempts,
         incorrectInputs: stats.incorrectInputs,
         collisions: stats.collisions,
+        practiceBumps: stats.collisions,
         obstaclesCleared: stats.obstaclesCleared,
         completionType: summary.completionType,
+        proficiencyStatus: summary.completionType,
         xpProposed: summary.xpProposed,
         accuracy: summary.accuracy,
+        trackCompletionStatus:
+          !isGuided && getNextStage(stageForRun.stageId) === null
+            ? 'track_a_complete'
+            : 'in_progress',
       }),
     });
 
@@ -387,20 +435,33 @@ function KeyCurrentExperience() {
         const progress = getUserGameProgress(GAME_KEY);
         const stageXp = next.reduce((sum, run) => sum + run.xpProposed, 0);
         const stageAccuracy = Math.max(
-          Number(progress.bestAccuracy[stage.stageId] ?? 0),
+          Number(progress.bestAccuracy[stageForRun.stageId] ?? 0),
           summary.accuracy,
         );
+        const completedLessons = progress.completedLessons.includes(
+          stageForRun.stageId,
+        )
+          ? progress.completedLessons
+          : [...progress.completedLessons, stageForRun.stageId];
+        const nextStage = getNextStage(stageForRun.stageId);
         const saved = saveUserGameProgress({
           ...progress,
           xp: progress.xp + stageXp,
-          completedLessons: progress.completedLessons.includes(stage.stageId)
-            ? progress.completedLessons
-            : [...progress.completedLessons, stage.stageId],
-          bestAccuracy: { ...progress.bestAccuracy, [stage.stageId]: stageAccuracy },
+          completedLessons,
+          bestAccuracy: {
+            ...progress.bestAccuracy,
+            [stageForRun.stageId]: stageAccuracy,
+          },
+          settings: {
+            ...progress.settings,
+            currentStageId: nextStage?.stageId ?? stageForRun.stageId,
+            trackAComplete: nextStage ? false : true,
+          },
         });
         setSavedXp(saved.xp);
         setSavedLevel(saved.level);
-        setStageCompletedBefore(true);
+        setCompletedStageIds(completedLessons);
+        setBestAccuracy(saved.bestAccuracy);
         stopMusic(true);
       }
 
@@ -411,7 +472,7 @@ function KeyCurrentExperience() {
       setPhase(isGuided ? 'run_complete' : 'stage_complete');
       setCharacterAnim('idle');
     }, 900);
-  }, [runtime, sfx, stage.stageId, stage.trackId, scheduleTimeout, stopMusic]);
+  }, [runtime, sfx, scheduleTimeout, stopMusic]);
 
   /* ---------- input ---------- */
 
@@ -543,9 +604,11 @@ function KeyCurrentExperience() {
   /* ---------- starting runs ---------- */
 
   const startRun = useCallback(
-    (type: KeyCurrentRunType) => {
+    (type: KeyCurrentRunType, stageOverride?: KeyCurrentStage) => {
       clearAllTimeouts();
-      const runObstacles = buildRunObstacles(stage, type);
+      const stageForRun = stageOverride ?? stage;
+      activeStageRef.current = stageForRun;
+      const runObstacles = buildRunObstacles(stageForRun, type);
       obstaclesRef.current = runObstacles;
       setObstacles(runObstacles);
       setActiveIndex(0);
@@ -578,11 +641,37 @@ function KeyCurrentExperience() {
     [clearAllTimeouts, playMusic, runtime, scheduleTimeout, stage],
   );
 
-  const startStage = useCallback(() => {
+  const startStage = useCallback((stageOverride?: KeyCurrentStage) => {
+    const stageForRun = stageOverride ?? stage;
+    setCurrentStageId(stageForRun.stageId);
+    persistCurrentStage(stageForRun.stageId);
     setRunSummaries([]);
     setPreviews([]);
-    startRun('guided_practice');
-  }, [startRun]);
+    startRun('guided_practice', stageForRun);
+  }, [persistCurrentStage, stage, startRun]);
+
+  const selectStage = useCallback(
+    (stageId: string) => {
+      if (!isTrackAStageUnlocked(stageId, completedStageIds)) return;
+      setCurrentStageId(stageId);
+      persistCurrentStage(stageId);
+    },
+    [completedStageIds, persistCurrentStage],
+  );
+
+  const continueTrackA = useCallback(() => {
+    const nextStage = getFirstIncompleteTrackAStage(completedStageIds);
+    startStage(nextStage);
+  }, [completedStageIds, startStage]);
+
+  const continueAfterStage = useCallback(() => {
+    const nextStage = getNextStage(activeStageRef.current.stageId);
+    if (!nextStage) {
+      setPhase('landing');
+      return;
+    }
+    startStage(nextStage);
+  }, [startStage]);
 
   const handleTryFaster = useCallback(() => {
     const order = KEY_CURRENT_DIFFICULTIES.map((d) => d.id);
@@ -591,8 +680,8 @@ function KeyCurrentExperience() {
     updateSettings({ difficulty: nextId });
     setRunSummaries([]);
     setPreviews([]);
-    startRun('guided_practice');
-  }, [startRun, updateSettings]);
+    startStage();
+  }, [startStage, updateSettings]);
 
   /* ---------- pause / resume / exit ---------- */
 
@@ -727,12 +816,17 @@ const upcoming2 = null;
         <div className="relative mx-auto flex min-h-dvh w-full max-w-4xl flex-col justify-center px-3 py-4">
           <KeyCurrentLanding
             stage={stage}
+            stages={trackAStages}
             settings={settings}
             onUpdateSettings={updateSettings}
-            onStart={startStage}
+            onStart={() => startStage()}
+            onContinue={continueTrackA}
+            onSelectStage={selectStage}
             savedXp={savedXp}
             savedLevel={savedLevel}
-            stageCompletedBefore={stageCompletedBefore}
+            completedStageIds={completedStageIds}
+            bestAccuracy={bestAccuracy}
+            trackAComplete={trackAComplete}
           />
         </div>
       )}
@@ -908,7 +1002,10 @@ const upcoming2 = null;
             settings={settings}
             previews={previews}
             canTryFaster={settings.difficulty !== 'expert'}
-            onReplay={startStage}
+            nextStage={getNextStage(stage.stageId)}
+            trackAComplete={trackAComplete}
+            onReplay={() => startStage()}
+            onContinue={continueAfterStage}
             onTryFaster={handleTryFaster}
             onBackToShore={exitToLanding}
           />

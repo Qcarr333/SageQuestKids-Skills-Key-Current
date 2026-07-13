@@ -54,6 +54,7 @@ export const TRACK_A_STAGE_1: KeyCurrentStage = {
   stageId: 'track_a_stage_1_f_j',
   trackId: 'track_a_home_base',
   stageName: 'F and J',
+  stageNumber: 1,
   activeKeys: ['F', 'J'],
   practiceObstacleCount: 8,
   proficiencyObstacleCount: 12,
@@ -61,29 +62,75 @@ export const TRACK_A_STAGE_1: KeyCurrentStage = {
   status: 'available',
 };
 
-const TRACK_A_FUTURE_STAGES: KeyCurrentStage[] = [
-  { stageName: 'D and K', activeKeys: ['D', 'K'], stageId: 'track_a_stage_2_d_k' },
-  { stageName: 'S and L', activeKeys: ['S', 'L'], stageId: 'track_a_stage_3_s_l' },
-  { stageName: 'A S D F', activeKeys: ['A', 'S', 'D', 'F'], stageId: 'track_a_stage_4_asdf' },
-  { stageName: 'J K L', activeKeys: ['J', 'K', 'L'], stageId: 'track_a_stage_5_jkl' },
+const TRACK_A_HOME_BASE_STAGES: KeyCurrentStage[] = [
+  TRACK_A_STAGE_1,
   {
-    stageName: 'A S D F J K L',
-    activeKeys: ['A', 'S', 'D', 'F', 'J', 'K', 'L'],
+    stageId: 'track_a_stage_2_d_k',
+    trackId: 'track_a_home_base',
+    stageName: 'D and K',
+    stageNumber: 2,
+    activeKeys: ['D', 'K'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'guided',
+    status: 'available',
+  },
+  {
+    stageId: 'track_a_stage_3_s_l',
+    trackId: 'track_a_home_base',
+    stageName: 'S and L',
+    stageNumber: 3,
+    activeKeys: ['S', 'L'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'guided',
+    status: 'available',
+  },
+  {
+    stageId: 'track_a_stage_4_asdf',
+    trackId: 'track_a_home_base',
+    stageName: 'A S D F',
+    stageNumber: 4,
+    activeKeys: ['A', 'S', 'D', 'F'],
+    practiceObstacleCount: 12,
+    proficiencyObstacleCount: 16,
+    failureMode: 'guided',
+    status: 'available',
+  },
+  {
+    stageId: 'track_a_stage_5_jkl',
+    trackId: 'track_a_home_base',
+    stageName: 'J K L',
+    stageNumber: 5,
+    activeKeys: ['J', 'K', 'L'],
+    practiceObstacleCount: 9,
+    proficiencyObstacleCount: 12,
+    failureMode: 'guided',
+    status: 'available',
+  },
+  {
     stageId: 'track_a_stage_6_home_row',
+    trackId: 'track_a_home_base',
+    stageName: 'A S D F J K L',
+    stageNumber: 6,
+    activeKeys: ['A', 'S', 'D', 'F', 'J', 'K', 'L'],
+    practiceObstacleCount: 14,
+    proficiencyObstacleCount: 20,
+    failureMode: 'guided',
+    status: 'available',
   },
   {
-    stageName: 'Home Base Review',
-    activeKeys: ['A', 'S', 'D', 'F', 'J', 'K', 'L'],
     stageId: 'track_a_stage_7_review',
+    trackId: 'track_a_home_base',
+    stageName: 'Mixed Home Base Review',
+    stageNumber: 7,
+    activeKeys: ['A', 'S', 'D', 'F', 'J', 'K', 'L'],
+    practiceObstacleCount: 14,
+    proficiencyObstacleCount: 21,
+    failureMode: 'guided',
+    status: 'available',
   },
-].map((stage) => ({
-  ...stage,
-  trackId: 'track_a_home_base',
-  practiceObstacleCount: 8,
-  proficiencyObstacleCount: 12,
-  failureMode: 'guided' as const,
-  status: 'coming_soon' as const,
-}));
+];
 
 export const KEY_CURRENT_TRACKS: KeyCurrentTrack[] = [
   {
@@ -91,7 +138,7 @@ export const KEY_CURRENT_TRACKS: KeyCurrentTrack[] = [
     trackName: 'Home Base',
     tagline: 'Find your anchor keys on the home row.',
     status: 'available',
-    stages: [TRACK_A_STAGE_1, ...TRACK_A_FUTURE_STAGES],
+    stages: TRACK_A_HOME_BASE_STAGES,
   },
   {
     trackId: 'track_b_center_reach',
@@ -220,5 +267,54 @@ export function getKeyCurrentCharacter(characterId: string): KeyCurrentCharacter
     KEY_CURRENT_CHARACTERS.find(
       (character) => character.characterId === characterId,
     ) ?? KEY_CURRENT_CHARACTERS[0]
+  );
+}
+
+export function getCurrentTrack(trackId: string): KeyCurrentTrack | null {
+  return KEY_CURRENT_TRACKS.find((track) => track.trackId === trackId) ?? null;
+}
+
+export function getCurrentStage(stageId: string): KeyCurrentStage {
+  return (
+    KEY_CURRENT_TRACKS.flatMap((track) => track.stages).find(
+      (stage) => stage.stageId === stageId,
+    ) ?? TRACK_A_STAGE_1
+  );
+}
+
+export function getNextStage(stageId: string): KeyCurrentStage | null {
+  const track = getCurrentTrack('track_a_home_base');
+  if (!track) return null;
+  const index = track.stages.findIndex((stage) => stage.stageId === stageId);
+  return index >= 0 ? track.stages[index + 1] ?? null : null;
+}
+
+export function getFirstIncompleteTrackAStage(
+  completedStageIds: string[],
+): KeyCurrentStage {
+  const track = getCurrentTrack('track_a_home_base');
+  const stages = track?.stages ?? [TRACK_A_STAGE_1];
+  return (
+    stages.find((stage) => !completedStageIds.includes(stage.stageId)) ??
+    stages[stages.length - 1]
+  );
+}
+
+export function isTrackAStageUnlocked(
+  stageId: string,
+  completedStageIds: string[],
+): boolean {
+  const track = getCurrentTrack('track_a_home_base');
+  if (!track) return false;
+  const index = track.stages.findIndex((stage) => stage.stageId === stageId);
+  if (index < 0) return false;
+  if (index === 0) return true;
+  return completedStageIds.includes(track.stages[index - 1].stageId);
+}
+
+export function isTrackAComplete(completedStageIds: string[]): boolean {
+  const track = getCurrentTrack('track_a_home_base');
+  return Boolean(
+    track?.stages.every((stage) => completedStageIds.includes(stage.stageId)),
   );
 }

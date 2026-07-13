@@ -9,19 +9,23 @@ Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-desi
 
 ## Scope of this checkpoint
 
-- Track A / Stage 1 (F and J) only
-- Guided Practice (predictable pattern) + Proficiency Check (balanced random)
+- Full Track A / Home Base V1:
+  F/J, D/K, S/L, A/S/D/F, J/K/L, A/S/D/F/J/K/L, and Mixed Home Base Review
+- Every stage has Guided Practice followed by a Proficiency Check
+- Stage map with completed/current/locked states, Continue Track A, and replay
 - Physical keyboard + onscreen keyboard helper (both count input mode)
 - Harmless bounce/retry collisions; Track A never hard-fails
 - Runtime preview only (`previewOnly: true`), no Supabase, no `/api/skills`
-- Local settings/XP persistence through `progressAdapter` (localStorage stub)
+- Local settings/XP/stage progress persistence through `progressAdapter`
+  (localStorage stub)
+- Tracks B-D remain future scope
 
 ## File map
 
 | File | Responsibility |
 | --- | --- |
 | `KeyCurrentGame.tsx` | Orchestrator: phases, game loop (rAF), collisions, music, runtime integration |
-| `KeyCurrentLanding.tsx` | Landing screen: character, difficulty slider, audio toggles, how-to-play |
+| `KeyCurrentLanding.tsx` | Landing screen: character, difficulty slider, audio toggles, Track A stage map |
 | `KeyCurrentPlayfield.tsx` | Skills Sea scene (sky, sea, boardwalk lane) |
 | `KeyCurrentObstacle.tsx` | Letter gates (coral/driftwood/energy skins), open/shake states |
 | `KeyCurrentCharacter.tsx` | CSS/SVG rear-view runner (mascot art pending extraction) |
@@ -29,8 +33,8 @@ Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-desi
 | `KeyCurrentHud.tsx` | Pause, run label, progress bar, difficulty bolts, music toggle |
 | `KeyCurrentCompletion.tsx` | Stage summary, Try Faster/Replay, dev-only runtime debug panels |
 | `keyCurrentTypes.ts` | Shared types |
-| `keyCurrentTracks.ts` | Track/stage/difficulty/character definitions |
-| `keyCurrentSequences.ts` | Guided + proficiency sequence generators |
+| `keyCurrentTracks.ts` | Track/stage/difficulty/character definitions and Track A progression helpers |
+| `keyCurrentSequences.ts` | Guided + balanced proficiency sequence generators |
 | `keyCurrentScoring.ts` | First-attempt accuracy, completion tiers, XP proposal |
 | `keyCurrentInput.ts` | Keyboard listener with held-key/repeat suppression |
 | `keyCurrentAssets.ts` | Music + sprite-sheet manifest (usage status) |
@@ -45,8 +49,10 @@ loop; collision plays a squash/bounce, then the gate eases back to the
 difficulty's re-approach distance and comes again. Completed letters survive
 collisions.
 
-Telemetry is aggregate-only (counts, accuracy, input mode). No raw key
-streams, pointer trails, or frame arrays are recorded.
+Telemetry is aggregate-only (stage/track/run ids, selected character,
+difficulty, counts, accuracy, input mode, practice bumps, proficiency status,
+track completion status). No raw key streams, pointer trails, or frame arrays
+are recorded.
 
 ## Moving to the main project
 

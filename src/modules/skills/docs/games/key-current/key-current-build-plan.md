@@ -1,5 +1,44 @@
 # Key Current — Build Plan
 
+## Checkpoint 1D - Track A Home Base V1 expansion
+
+Goal: expand Key Current from a single F/J stage into the full Track A Home
+Base experience, without changing the 1C/1C.1 playfield composition or
+generated assets.
+
+Delivered:
+
+- **Track A stages 1-7 are available:** F/J, D/K, S/L, A/S/D/F, J/K/L,
+  A/S/D/F/J/K/L, and Mixed Home Base Review.
+- **Two-run structure per stage:** every stage uses Guided Practice followed
+  by a Proficiency Check. Guided runs are short and predictable; checks are
+  balanced, re-randomized on replay, and avoid excessive same-key runs.
+- **Stage progression:** completing Guided Practice opens the Proficiency
+  Check; completing the check marks the stage complete, unlocks the next
+  stage, and keeps replay available. Completing Stage 7 marks Track A
+  complete.
+- **Landing stage map:** Track A now shows completed/current/locked states,
+  best local preview accuracy, Continue Track A, and selected-stage replay.
+  Tracks B-D remain visible only as future scope.
+- **Keyboard helper:** the full keyboard silhouette receives the current
+  stage's active keys, so F/J, D/K, S/L, ASDF, JKL, and ASDFJKL keep true
+  approximate positions with current-target highlight and wrong-key red flash.
+- **Runtime preview payload:** aggregate metadata now includes `stageId`,
+  `trackId`, `runType`, selected character, difficulty, input mode,
+  required/correct/incorrect counts, collisions/practice bumps, obstacles
+  cleared, `completionType`, `proficiencyStatus`, proposed XP, accuracy, and
+  `trackCompletionStatus`.
+- **Persistence:** still local preview only through `progressAdapter`; no
+  Supabase writes, migrations, `/api/skills`, assignments, dashboards, raw
+  telemetry, voice files, or backend XP writes.
+- **Visual preservation:** future/upcoming gates remain hidden for V1. The
+  1C.1 causeway perspective, texture tuning, generated gate, generated runner
+  art, and slower/less-zoomed lane texture scroll were not redesigned.
+
+Remaining future scope: Track B Center Reach, Track C Outer Reach, Track D
+Short Words, final V1 closure audit, production backend persistence, and real
+Voice Help remain out of scope until later checkpoints.
+
 Tracks the phased build of Key Current against the V1 design spec
 (`key-current-v1-design-spec.md`, §30 build order).
 
@@ -140,14 +179,14 @@ Explicitly out of scope this checkpoint (per instructions): Supabase writes,
 migrations, `/api/skills`, assignments, dashboards, real Voice Help audio,
 additional stages/tracks, three-collision restart (Tracks B–D rule).
 
-## Checkpoint 2 — Track A content
+## Checkpoint 2 - Track B Center Reach expansion
 
-- Stages 2–7 (D/K, S/L, ASDF, JKL, combined, review) using the existing
-  stage/sequence engine (already generalized to N keys and multi-letter
-  obstacles)
-- Stage select + unlock flow (Track A map)
-- Continue behavior for returning players
-- Randomized Home Base Practice mode after Track A completion
+- Add Center Reach stages that build from home-row anchors.
+- Keep Track A replayable and completed in local preview.
+- Decide whether Track B introduces the later three-collision restart rule or
+  remains guided for early testing.
+- Defer transfer to the main project until Tracks A-D and the final V1
+  closure audit are complete.
 
 ## Checkpoint 3 — Character & environment art integration
 

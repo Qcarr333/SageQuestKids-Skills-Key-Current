@@ -44,6 +44,7 @@ export type KeyCurrentStage = {
   stageId: string;
   trackId: string;
   stageName: string;
+  stageNumber: number;
   activeKeys: string[];
   practiceObstacleCount: number;
   proficiencyObstacleCount: number;

@@ -48,14 +48,11 @@ export function buildGuidedPracticeSequence(stage: KeyCurrentStage): string[] {
  * - no key repeats more than twice in a row
  * - regenerated (re-randomized) on every call, so replays differ
  */
-export function buildProficiencyCheckSequence(stage: KeyCurrentStage): string[] {
+export function buildProficiencySequence(stage: KeyCurrentStage): string[] {
   const keys = stage.activeKeys;
   const count = stage.proficiencyObstacleCount;
 
-  const pool: string[] = [];
-  for (let i = 0; i < count; i += 1) {
-    pool.push(keys[i % keys.length]);
-  }
+  const pool = ensureBalancedKeyCoverage(keys, count);
 
   for (let attempt = 0; attempt < 24; attempt += 1) {
     const shuffled = [...pool];
@@ -72,6 +69,25 @@ export function buildProficiencyCheckSequence(stage: KeyCurrentStage): string[] 
   return pool;
 }
 
+export const buildProficiencyCheckSequence = buildProficiencySequence;
+
+export function ensureBalancedKeyCoverage(keys: string[], count: number): string[] {
+  const pool: string[] = [];
+  for (let i = 0; i < count; i += 1) {
+    pool.push(keys[i % keys.length]);
+  }
+  return pool;
+}
+
+export function generateReplaySequence(
+  stage: KeyCurrentStage,
+  runType: KeyCurrentRunType,
+): string[] {
+  return runType === 'guided_practice'
+    ? buildGuidedPracticeSequence(stage)
+    : buildProficiencySequence(stage);
+}
+
 function hasLongRepeat(sequence: string[], maxRun: number) {
   let run = 1;
   for (let i = 1; i < sequence.length; i += 1) {
@@ -85,10 +101,7 @@ export function buildRunObstacles(
   stage: KeyCurrentStage,
   runType: KeyCurrentRunType,
 ): KeyCurrentObstacle[] {
-  const sequence =
-    runType === 'guided_practice'
-      ? buildGuidedPracticeSequence(stage)
-      : buildProficiencyCheckSequence(stage);
+  const sequence = generateReplaySequence(stage, runType);
 
   return sequence.map((key, index) => ({
     id: nextObstacleId(),

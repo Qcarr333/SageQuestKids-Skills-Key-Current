@@ -39,6 +39,30 @@ The game imports only:
 
 No `/gaming` assumptions, no hardcoded host URLs, no API calls.
 
+## 1D transfer-readiness note
+
+Checkpoint 1D makes Track A Home Base playable end to end in this portable
+workspace, but the game is **not ready for main-project transfer yet**. The V1
+roadmap still requires Track B Center Reach, Track C Outer Reach, Track D
+Short Words, and a final closure audit before integration.
+
+1D behavior that should transfer later:
+
+- Track A stages 1-7 are data-driven in `keyCurrentTracks.ts`.
+- Every stage has Guided Practice followed by a Proficiency Check.
+- Completing a Proficiency Check completes the stage, unlocks the next stage,
+  and keeps replay available.
+- Completing Stage 7 marks Track A complete.
+- Runtime metadata remains aggregate-only and preview-only, including stage,
+  track, run type, selected character, difficulty, input mode, counts,
+  practice bumps, accuracy, proficiency status, XP proposal, and track
+  completion status.
+- Future/upcoming gates remain hidden for V1, preserving the accepted 1C.1
+  playfield composition.
+
+Still no Supabase writes, migrations, `/api/skills`, raw telemetry, assignment
+logic, dashboard coupling, voice MP3 generation, or browser speech synthesis.
+
 ## Route
 
 Create the thin wrapper in the main app router:

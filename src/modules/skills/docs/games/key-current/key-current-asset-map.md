@@ -1,7 +1,21 @@
 # Key Current — Asset Map
 
-Checkpoint: **1C.1 — perspective geometry cleanup** (assets unchanged from
-1C). Inspected/generated: 2026-07-12.
+Checkpoint: **1D - Track A Home Base V1 expansion** (assets unchanged from
+1C/1C.1). Inspected/generated: 2026-07-13.
+
+## 1D note - no new art or Higgsfield usage
+
+Checkpoint 1D is a curriculum, stage-progression, and local preview metadata
+checkpoint. No generated assets were changed, no new art was requested, and
+Higgsfield was not used.
+
+The accepted 1C/1C.1 visual setup remains intact:
+
+- generated gate, causeway texture, and six runner images are reused;
+- all six characters remain visible, selectable, unlocked, and cosmetic-only;
+- future/upcoming gates remain hidden for V1;
+- the road/causeway perspective, lane texture scroll tuning, and gate/runner
+  composition are preserved.
 
 ## 1C.1 note — no Higgsfield usage
 
