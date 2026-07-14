@@ -39,6 +39,37 @@ The game imports only:
 
 No `/gaming` assumptions, no hardcoded host URLs, no API calls.
 
+## 1F.1 transfer-readiness note
+
+Checkpoint 1F.1 adds punctuation-key support and revises Track B/C stage
+shapes, but the game is **still not ready for main-project transfer**. Track D
+Short Words, final QA/docs/optimization, and the transfer-readiness closure
+audit remain pending.
+
+1F.1 behavior that should transfer later:
+
+- Physical keyboard input normalizes semicolon and shifted colon to `;`, and
+  recognizes comma and period as `,` and `.`.
+- The visual keyboard bottom row is `Z X C V B N M , .`; existing letter key
+  order and the accepted row offsets are preserved.
+- Wrong-key feedback and touch input now work for `;`, `,`, and `.` through
+  the same aggregate input path as letters.
+- Track B Center Reach now has 17 stages, including four three-key bridge
+  stages before the review stages.
+- Track C Outer Reach now has 17 stages, including punctuation reach stages
+  and punctuation-aware right/mixed reviews.
+- Local preview progress filters incompatible old B/C review-stage IDs while
+  preserving Track A, selected character, settings, and unchanged safe stage
+  completions where possible.
+- The kid-safe contiguous sequence guard remains internal, bounded, and active
+  for Guided Practice and Proficiency Check across Tracks A-C. Punctuation is
+  ignored for the guard comparison so letter safety remains stable.
+
+Still no Track D implementation, Supabase writes, migrations, `/api/skills`,
+raw telemetry, assignment logic, dashboards, voice MP3 generation, browser
+speech synthesis, Higgsfield usage, generated art changes, playfield redesign,
+or transfer work.
+
 ## 1F transfer-readiness note
 
 Checkpoint 1F adds Track C Outer Reach, but the game is **still not ready for

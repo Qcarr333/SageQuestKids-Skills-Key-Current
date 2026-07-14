@@ -6,6 +6,8 @@ export type KeyCurrentInputSource = 'keyboard' | 'touch';
 
 export function normalizeKeyCurrentKey(rawKey: string): string | null {
   if (rawKey.length !== 1) return null;
+  if (rawKey === ';' || rawKey === ':') return ';';
+  if (rawKey === ',' || rawKey === '.') return rawKey;
   const upper = rawKey.toUpperCase();
   return upper >= 'A' && upper <= 'Z' ? upper : null;
 }

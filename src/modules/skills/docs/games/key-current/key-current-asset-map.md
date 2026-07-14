@@ -1,7 +1,24 @@
 # Key Current — Asset Map
 
-Checkpoint: **1F - Track C Outer Reach Expansion** (assets unchanged
+Checkpoint: **1F.1 - Punctuation keyboard support + Track B/C bridge revision** (assets unchanged
 from 1C/1C.1). Inspected/generated: 2026-07-14.
+
+## 1F.1 note - no new art or Higgsfield usage
+
+Checkpoint 1F.1 is an input, visual keyboard, stage-data, and docs checkpoint.
+No generated assets were changed, no new art was requested, and Higgsfield was
+not used.
+
+The accepted visual setup remains intact:
+
+- generated gate, causeway texture, and six runner images are reused;
+- all six characters remain visible, selectable, unlocked, and cosmetic-only;
+- future/upcoming gates remain hidden for V1;
+- the road/causeway perspective, lane texture scroll tuning, and gate/runner
+  composition are preserved;
+- the visual keyboard adds only comma and period after `M`;
+- the accepted keyboard helper row offsets are preserved and input mechanics
+  for letters are unchanged.
 
 ## 1F note - no new art or Higgsfield usage
 

@@ -13,17 +13,21 @@ Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-desi
   F/J, D/K, S/L, A/S/D/F, J/K/L, A/S/D/F/J/K/L, and Mixed Home Base Review
 - Track B / Center Reach:
   F/G, J/H, F/R, J/U, F/T, J/Y, F/V, J/N, F/B, J/M, left/right center
-  reach reviews, and mixed center reach review
+  reach bridge groups, left/right center reach reviews, and mixed center
+  reach review
 - Track C / Outer Reach:
-  A/Q, S/W, D/E, J/I, K/O, L/P, A/Z, S/X, D/C, left/right outer reach
-  reviews, and mixed outer reach review
+  D/C, D/E, D/E/C, S/X, S/W, S/W/X, A/Z, A/Q, A/Q/Z, K/I, K/,/I,
+  L/O, L/./O, ;/P, left/right outer reach reviews, and mixed outer reach
+  review
 - Every Track A, Track B, and Track C stage has Guided Practice followed by a
   Proficiency Check
 - Scalable Track A-D dashboard with compact progress rows, one expanded track,
   `Continue Adventure`, hidden duplicate start actions, and replay for
   unlocked/completed stages
 - Bounded kid-safe sequence guard for generated letter sequences
-- Physical keyboard + onscreen keyboard helper (both count input mode)
+- Physical keyboard + onscreen keyboard helper (both count input mode),
+  including semicolon/shifted-colon, comma, and period support
+- Visual keyboard bottom row includes `Z X C V B N M , .`
 - Harmless bounce/retry collisions; Track A never hard-fails
 - Track B and Track C use a supportive three-practice-bump restart state with
   Try Again and Make It Easier
@@ -33,7 +37,8 @@ Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-desi
 - Primary yellow landing/completion/retry actions receive focus so Enter can
   activate them outside active gameplay
 - Old preview-only Track B completion IDs are filtered if they do not match
-  the 13-stage 1E.1 shape; Track A progress and settings are preserved
+  the current stage shape; incompatible old Track B/C review progress is
+  filtered while Track A progress and settings are preserved
 - Runtime preview only (`previewOnly: true`), no Supabase, no `/api/skills`
 - Local settings/XP/stage progress persistence through `progressAdapter`
   (localStorage stub)

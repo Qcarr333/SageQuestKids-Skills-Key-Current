@@ -105,8 +105,8 @@ export function KeyCurrentKeyboardHelper({
                     flashClass,
                     isActive
                       ? compact
-                        ? 'h-9 min-w-9 flex-none px-0.5 text-lg sm:h-12 sm:min-w-14 sm:px-1 sm:text-2xl'
-                        : 'h-10 min-w-9 flex-none px-0.5 text-xl sm:h-14 sm:min-w-16 sm:px-1 sm:text-3xl'
+                        ? 'h-9 min-w-8 flex-none px-0.5 text-lg sm:h-12 sm:min-w-14 sm:px-1 sm:text-2xl'
+                        : 'h-10 min-w-8 flex-none px-0.5 text-xl sm:h-14 sm:min-w-16 sm:px-1 sm:text-3xl'
                       : compact
                         ? 'h-7 min-w-5 max-w-7 flex-1 text-[9px] sm:h-8 sm:min-w-6 sm:max-w-9 sm:text-xs'
                         : 'h-7 min-w-5 max-w-7 flex-1 text-[9px] sm:h-9 sm:min-w-6 sm:max-w-11 sm:text-xs',

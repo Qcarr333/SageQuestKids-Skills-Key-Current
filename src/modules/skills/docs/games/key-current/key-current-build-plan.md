@@ -1,5 +1,41 @@
 # Key Current — Build Plan
 
+## Checkpoint 1F.1 - Punctuation keyboard support + Track B/C bridge revision
+
+Goal: stabilize punctuation-key input and smooth the Track B / Track C learning
+ramp before Track D.
+
+Delivered:
+
+- **Punctuation input support:** physical semicolon, shifted colon, comma, and
+  period now normalize into the game input path. Shifted colon is treated as
+  the semicolon physical key for V1.
+- **Visual keyboard punctuation:** the bottom visual keyboard row now includes
+  comma and period after `M`, preserving the existing letter order and the
+  accepted row offsets.
+- **Wrong-key punctuation feedback:** semicolon, comma, and period can now
+  reach the same wrong-key path as letters, so the pressed punctuation key can
+  flash red while the target remains green.
+- **Track B revised to 17 stages:** the ten two-key center-reach stages are
+  followed by four three-key bridge stages (`F T V`, `J N U`, `F B R`,
+  `J M Y`) and then left, right, and mixed center reach reviews.
+- **Track C revised to 17 stages:** the outer-reach sequence now includes
+  smaller left-hand bridge groups, punctuation reach support (`K , I`,
+  `L . O`, `; P`), and punctuation-aware right/mixed review groups.
+- **Local preview compatibility:** unchanged early Track B pair stages and the
+  unchanged Track C `A/Z` stage can remain completed. Old review-stage IDs
+  that no longer match the revised B/C shape are filtered on load; Track A,
+  selected character, and settings remain preserved.
+- **Sequence safety:** the kid-safe contiguous sequence guard remains active
+  for Guided Practice and Proficiency Check across Tracks A-C. Punctuation is
+  ignored during safety-string comparison so letter safety remains stable.
+- **Preservation:** Track D was not implemented. No Higgsfield, generated art,
+  playfield, path texture, Supabase, backend API, dashboard, assignment, raw
+  telemetry, or transfer work was added.
+
+Transfer readiness remains pending until Track D and the final V1 closure
+audit are complete.
+
 ## Checkpoint 1F - Track C Outer Reach Expansion
 
 Goal: add Track C Outer Reach while preserving completed Track A and Track B,

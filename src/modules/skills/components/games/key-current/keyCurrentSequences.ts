@@ -112,16 +112,29 @@ function buildGuidedPracticeSequenceUnsafe(stage: KeyCurrentStage): string[] {
 }
 
 function isKidSafeSequence(sequence: string[]): boolean {
-  const joined = sequence.join('');
+  const joined = normalizeSequenceForSafety(sequence);
   return !KID_SAFE_BLOCKED_SUBSTRINGS.some((blocked) => joined.includes(blocked));
 }
 
 function findBlockedIndex(sequence: string[]): number {
-  const joined = sequence.join('');
-  const match = KID_SAFE_BLOCKED_SUBSTRINGS.map((blocked) =>
-    joined.includes(blocked) ? joined.indexOf(blocked) : -1,
-  ).filter((index) => index >= 0);
-  return match.length > 0 ? Math.min(...match) : -1;
+  const normalized = sequence
+    .map((key, index) => ({ key, index }))
+    .filter((item) => /^[A-Z]$/.test(item.key));
+  const joined = normalized.map((item) => item.key).join('');
+  let blockedStart = -1;
+  for (const blocked of KID_SAFE_BLOCKED_SUBSTRINGS) {
+    const index = joined.indexOf(blocked);
+    if (index >= 0 && (blockedStart < 0 || index < blockedStart)) {
+      blockedStart = index;
+    }
+  }
+  if (blockedStart < 0) return -1;
+  const repairTarget = normalized[Math.min(blockedStart + 1, normalized.length - 1)];
+  return repairTarget?.index ?? -1;
+}
+
+function normalizeSequenceForSafety(sequence: string[]): string {
+  return sequence.join('').replace(/[^A-Z]/g, '');
 }
 
 function guardKidSafeSequence(sequence: string[], keys: string[]): string[] {

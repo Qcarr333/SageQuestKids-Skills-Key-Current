@@ -66,6 +66,9 @@ const LEGACY_TRACK_B_STAGE_IDS = new Set([
   'track_b_stage_7_left_center',
   'track_b_stage_8_right_center',
   'track_b_stage_9_center_review',
+  'track_b_stage_11_left_center',
+  'track_b_stage_12_right_center',
+  'track_b_stage_13_center_review',
 ]);
 
 const DEFAULT_SETTINGS: KeyCurrentSettings = {
@@ -165,6 +168,7 @@ function KeyCurrentExperience() {
         settings: {
           ...progress.settings,
           trackBProgressResetFor1E1: true,
+          trackBCProgressResetFor1F1: true,
         },
       });
     }
