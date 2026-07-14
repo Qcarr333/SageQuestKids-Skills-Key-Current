@@ -38,14 +38,18 @@ export function KeyCurrentKeyboardHelper({
   compact = false,
   disabled = false,
 }: KeyCurrentKeyboardHelperProps) {
-  const rowOffsets = ['sm:pl-0', 'sm:pl-4', 'sm:pl-10'];
+  const rowOffsets = [
+    '',
+    'translate-x-[0.25rem] sm:translate-x-3',
+    '-translate-x-[0.75rem] sm:-translate-x-2',
+  ];
   const targetSide =
     targetKey === null ? null : LEFT_HAND_KEYS.has(targetKey) ? 'left' : 'right';
 
   return (
     <section
       aria-label="Keyboard helper — tap a key or press it on your keyboard"
-      className={`${styles.helperPanel} px-2 pb-2 pt-1.5 sm:px-4 sm:pb-3 sm:pt-2`}
+      className={`${styles.helperPanel} px-1 pb-2 pt-1.5 sm:px-4 sm:pb-3 sm:pt-2`}
     >
       <div className="mb-1 flex items-center justify-between gap-2 sm:mb-1.5">
         <span
@@ -67,11 +71,11 @@ export function KeyCurrentKeyboardHelper({
         </span>
       </div>
 
-      <div className="flex flex-col items-stretch gap-1 sm:gap-1.5">
+      <div className="flex flex-col items-stretch gap-0.5 sm:gap-1.5">
         {KEYBOARD_ROWS.map((row, rowIndex) => (
           <div
             key={row.join('')}
-            className={`flex justify-center gap-[3px] sm:gap-1.5 ${rowOffsets[rowIndex]}`}
+            className={`flex justify-center gap-[2px] sm:gap-1.5 ${rowOffsets[rowIndex]}`}
           >
             {row.map((key) => {
               const isActive = activeKeys.includes(key);
@@ -101,11 +105,11 @@ export function KeyCurrentKeyboardHelper({
                     flashClass,
                     isActive
                       ? compact
-                        ? 'h-11 min-w-11 flex-none px-1 text-xl sm:h-12 sm:min-w-14 sm:text-2xl'
-                        : 'h-12 min-w-11 flex-none px-1 text-2xl sm:h-14 sm:min-w-16 sm:text-3xl'
+                        ? 'h-9 min-w-9 flex-none px-0.5 text-lg sm:h-12 sm:min-w-14 sm:px-1 sm:text-2xl'
+                        : 'h-10 min-w-9 flex-none px-0.5 text-xl sm:h-14 sm:min-w-16 sm:px-1 sm:text-3xl'
                       : compact
-                        ? 'h-7 min-w-6 max-w-9 flex-1 text-[10px] sm:h-8 sm:text-xs'
-                        : 'h-8 min-w-6 max-w-9 flex-1 text-[10px] sm:h-9 sm:max-w-11 sm:text-xs',
+                        ? 'h-7 min-w-5 max-w-7 flex-1 text-[9px] sm:h-8 sm:min-w-6 sm:max-w-9 sm:text-xs'
+                        : 'h-7 min-w-5 max-w-7 flex-1 text-[9px] sm:h-9 sm:min-w-6 sm:max-w-11 sm:text-xs',
                   ].join(' ')}
                 >
                   {key}

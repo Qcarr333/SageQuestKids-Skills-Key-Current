@@ -16,6 +16,7 @@ type KeyCurrentCharacterProps = {
   className?: string;
   /** Loads the image eagerly (use for the in-run character). */
   priority?: boolean;
+  showShadow?: boolean;
 };
 
 const ANIM_CLASS: Record<KeyCurrentCharacterAnim, string> = {
@@ -40,6 +41,7 @@ export function KeyCurrentCharacter({
   showBonkStars = false,
   className,
   priority = false,
+  showShadow = false,
 }: KeyCurrentCharacterProps) {
   const art = KEY_CURRENT_RUNNERS[character.characterId] ?? KEY_CURRENT_RUNNERS.turtle;
 
@@ -49,7 +51,7 @@ export function KeyCurrentCharacter({
       role="img"
       aria-label={`${character.name}, seen from behind, ${anim === 'collide' ? 'bouncing off a gate' : 'running along the path'}`}
     >
-      <div className={styles.characterShadow} aria-hidden />
+      {showShadow && <div className={styles.characterShadow} aria-hidden />}
       <div className={styles.characterBody}>
         {showBonkStars && (
           <div className={styles.bonkStars} aria-hidden>

@@ -39,6 +39,95 @@ The game imports only:
 
 No `/gaming` assumptions, no hardcoded host URLs, no API calls.
 
+## 1F transfer-readiness note
+
+Checkpoint 1F adds Track C Outer Reach, but the game is **still not ready for
+main-project transfer**. Track D Short Words, final QA/docs/optimization, and
+the transfer-readiness closure audit remain pending.
+
+1F behavior that should transfer later:
+
+- Track A Home Base, Track B Center Reach, and Track C Outer Reach are
+  data-driven in `keyCurrentTracks.ts`.
+- Track C unlocks only after Track B is complete; Track D remains
+  locked/coming later in this checkpoint.
+- Track C has 12 stages covering top and bottom outer reaches plus left,
+  right, and mixed outer reach reviews.
+- Track C remains Guided Practice followed by Proficiency Check, with the
+  same supportive three-practice-bump restart behavior used by Track B.
+- Generated sequences continue to pass through the bounded kid-safe local
+  guard; no raw key streams or sequence telemetry are added.
+- The HUD now displays the actual current track name and track-local stage
+  number. Large current-stage key sets wrap as compact chips in the landing
+  settings panel.
+- Primary yellow actions receive focus for Enter-key activation outside active
+  gameplay states. Active letter input handling is unchanged.
+- The accepted keyboard row offsets are preserved and `KEYBOARD_ROWS` order
+  remains unchanged.
+
+Still no Track D implementation, Supabase writes, migrations, `/api/skills`,
+raw telemetry, assignment logic, dashboards, voice MP3 generation, browser
+speech synthesis, Higgsfield usage, generated art changes, playfield redesign,
+or transfer work.
+
+## 1E.1 transfer-readiness note
+
+Checkpoint 1E.1 is a cleanup checkpoint on top of the completed 1E Track B
+build. The game is **still not ready for main-project transfer**. Track C,
+Track D, final QA/docs/optimization, and the closure audit remain pending.
+
+1E.1 behavior that should transfer later:
+
+- Track B Center Reach now has 13 stages: ten two-key anchor/reach stages,
+  left and right center reach reviews, and a mixed center reach review.
+- Track B remains Guided Practice followed by Proficiency Check, with the
+  existing three-practice-bump restart behavior preserved.
+- Generated sequences run through a bounded kid-safe local guard that checks
+  contiguous generated letters, retries/repairs, and falls back
+  deterministically without raw telemetry.
+- Landing expanded stage rows are compact one-line rows. The duplicate
+  secondary start button is hidden when it would do the same thing as
+  `Continue Adventure`.
+- Old local preview Track B completed IDs that no longer match the 13-stage
+  shape are filtered on load. Track A completion and settings are preserved.
+- The bottom keyboard row alignment is a helper layout/CSS adjustment only;
+  `KEYBOARD_ROWS` ordering and input behavior are unchanged.
+
+Still no Track C/D implementation, Supabase writes, migrations, `/api/skills`,
+raw telemetry, assignment logic, dashboards, voice MP3 generation, browser
+speech synthesis, Higgsfield usage, generated art changes, or playfield
+redesign.
+
+## 1E transfer-readiness note
+
+Checkpoint 1E adds Track B Center Reach and a scalable landing/progress
+dashboard, but the game is **still not ready for main-project transfer**. The
+V1 roadmap still requires Track C Outer Reach, Track D Short Words, and final
+QA/docs/optimization/transfer-readiness closure.
+
+1E behavior that should transfer later:
+
+- Track A Home Base and Track B Center Reach are data-driven in
+  `keyCurrentTracks.ts`.
+- Track B unlocks only after Track A is complete.
+- Track C and Track D remain visible as locked/coming later; no stages are
+  implemented for them yet.
+- The landing page uses compact Track A-D progress rows with one expanded
+  track detail area, not a giant always-visible stage grid.
+- Track B stages use Guided Practice followed by Proficiency Check.
+- Track B uses a supportive three-practice-bump restart state. Track A remains
+  guided/no-hard-fail.
+- Runtime metadata remains aggregate-only and preview-only, adding
+  `failureMode` and `restartReason` for three-bump restarts.
+- Mobile keyboard helper sizing was tightened for large Track A/B active-key
+  groups while keeping true approximate key placement.
+- Future/upcoming gates remain hidden for V1, preserving the accepted 1C.1
+  playfield composition.
+
+Still no Supabase writes, migrations, `/api/skills`, raw telemetry, assignment
+logic, dashboard coupling, voice MP3 generation, browser speech synthesis, or
+new generated art.
+
 ## 1D transfer-readiness note
 
 Checkpoint 1D makes Track A Home Base playable end to end in this portable

@@ -1,5 +1,122 @@
 # Key Current — Build Plan
 
+## Checkpoint 1F - Track C Outer Reach Expansion
+
+Goal: add Track C Outer Reach while preserving completed Track A and Track B,
+the accepted 1C/1C.1 playfield, the scalable landing dashboard, and the 1E.1
+Track B instructional cleanup.
+
+Delivered:
+
+- **Track C stages 1-12 are available after Track B completion:** A/Q, S/W,
+  D/E, J/I, K/O, L/P, A/Z, S/X, D/C, Left Outer Reach Review, Right Outer
+  Reach Review, and Mixed Outer Reach Review.
+- **Track C run structure:** every Track C stage uses Guided Practice followed
+  by a Proficiency Check. Pair stages use 8/12 gates, the left review uses
+  14/18, the right review uses 12/16, and the mixed review stays capped at
+  18/24.
+- **Track C restart behavior:** Track C uses the same supportive
+  three-practice-bump restart model as Track B: Try Again, Make It Easier,
+  and Back to Track Map. Track A remains guided/no-hard-fail.
+- **Unlock/progression:** Track C unlocks after Track B completion, completing
+  each Track C stage unlocks the next, and completing Stage 12 marks Track C
+  complete. Track D remains locked/coming later.
+- **Pre-flight UI/accessibility fixes:** the HUD now uses the actual current
+  track name with track-local stage numbers; large current-stage key badge
+  sets wrap into compact chips inside the settings panel; primary yellow
+  actions receive focus so Enter works on landing, Guided Practice completion,
+  stage completion, and supportive retry overlays.
+- **Keyboard preservation:** the accepted keyboard helper row offsets are
+  preserved, `KEYBOARD_ROWS` order is unchanged, and input mechanics remain
+  unchanged.
+- **Safety/runtime preservation:** the kid-safe contiguous sequence guard
+  applies to Track C generated sequences. Runtime remains `previewOnly: true`
+  with aggregate-only metadata and no raw key streams.
+- **Visual/backend preservation:** no Higgsfield, no generated art changes, no
+  playfield redesign, no future-gate re-enable, no Supabase, no migrations,
+  no `/api/skills`, no dashboards, no assignment behavior, and no transfer
+  work was performed.
+
+Transfer readiness remains pending until Track D and the final V1 closure
+audit are complete.
+
+## Checkpoint 1E.1 - Track B instructional polish + landing microfixes
+
+Goal: polish the Track B build before Track C so the Center Reach pattern
+teaches anchor-to-reach muscle memory more clearly.
+
+Delivered:
+
+- **Landing compact stage rows:** expanded track details now use one compact
+  line per stage, such as `Stage 1 - F J - Current`, with local best accuracy
+  shown only as a small compact chip when useful.
+- **CTA cleanup:** `Continue Adventure` remains the primary action. The
+  secondary start button is hidden when it would launch the same current
+  unfinished stage, remains `Replay Selected Stage` for completed selections,
+  and becomes `Start Selected Stage` only for a different unlocked selection.
+- **Kid-safe sequence guard:** Guided Practice, Proficiency Check, and future
+  generated review sequences pass through a bounded local guard that checks
+  contiguous generated letters, retries/repairs safely, and cannot hang.
+- **Track B revised to 13 stages:** F/G, J/H, F/R, J/U, F/T, J/Y, F/V, J/N,
+  F/B, J/M, Left Center Reach Review, Right Center Reach Review, and Mixed
+  Center Reach Review.
+- **Anchor/reach practice shape:** Track B pair stages keep two-key
+  anchor/reach practice for now, with predictable Guided Practice rhythms and
+  balanced randomized Proficiency Checks. Three-key reach groups are deferred
+  for playtesting after the two-key pattern feels solid.
+- **Local preview progress compatibility:** old Track B preview-only completed
+  IDs that no longer match the 13-stage shape are filtered on load. Track A
+  completion, XP, best accuracy, and settings are preserved.
+- **Keyboard helper alignment:** the bottom keyboard row is shifted slightly
+  left through helper layout classes only. `KEYBOARD_ROWS` order and input
+  mechanics are unchanged.
+- **Preservation:** Track C and Track D were not implemented. No Higgsfield,
+  new art, generated asset changes, playfield redesign, Supabase, backend API,
+  dashboard, assignment, or transfer work was performed.
+
+Transfer readiness remains pending until Tracks A-D and the final V1 closure
+audit are complete.
+
+## Checkpoint 1E - Track B Center Reach + scalable landing
+
+Goal: add Track B Center Reach and replace the Track A-only landing stage grid
+with a compact progress dashboard that scales to Tracks A-D.
+
+Delivered:
+
+- **Track B stages 1-9 are available after Track A completion:** F/G, J/H,
+  R/U, T/Y, V/N, B/M, Left Center Reach, Right Center Reach, and Mixed Center
+  Reach Review.
+- **Track B run structure:** every Track B stage uses Guided Practice followed
+  by a Proficiency Check. Pair stages stay at 8/12 gates, six-key zones use
+  14/18, and the 12-key review uses 16/24.
+- **Three-practice-bump restart:** Track B uses `failureMode:
+  'three_collision'`. Three practice bumps pause the current run with
+  supportive retry copy, Try Again, Make It Easier, and Back to Track Map.
+  Track A remains guided/no-hard-fail.
+- **Scalable landing:** the landing screen now prioritizes explorer selection,
+  speed/settings, and a `Continue Adventure` button. A compact track progress
+  dashboard shows Track A-D rows, one expanded track, progress bars, compact
+  stage rows, local best accuracy, locked/current/complete states, and Track
+  C/D as coming later.
+- **Progression helpers:** track/stage lookup, first incomplete stage, first
+  playable stage across tracks, stage unlocks, track completion, and available
+  tracks are now generic rather than Track A-only.
+- **Polish fixes:** restored lightning speed icons and Music/Sounds/Guide
+  icons, removed the stray landing character shadow by making runner shadows
+  opt-in, and reduced mobile keyboard helper sizing/gaps so large active key
+  groups fit at narrow widths.
+- **Runtime preview payload:** aggregate metadata includes `failureMode` and,
+  for Track B restarts, `restartReason`, while preserving `previewOnly: true`
+  and avoiding raw key streams or pointer/frame telemetry.
+- **Visual/backend preservation:** no Higgsfield, no generated art changes, no
+  playfield redesign, no future-gate re-enable, no Supabase, no migrations,
+  no `/api/skills`, no dashboards, and no assignment behavior.
+
+Remaining future scope: Track C Outer Reach, Track D Short Words, final V1
+QA/docs/optimization, production backend persistence, and transfer-readiness
+closure.
+
 ## Checkpoint 1D - Track A Home Base V1 expansion
 
 Goal: expand Key Current from a single F/J stage into the full Track A Home

@@ -9,6 +9,7 @@ import type {
 
 type KeyCurrentHudProps = {
   stage: KeyCurrentStage;
+  trackName: string;
   runType: KeyCurrentRunType;
   obstaclesCleared: number;
   obstaclesTotal: number;
@@ -31,6 +32,7 @@ const RUN_LABEL: Record<KeyCurrentRunType, string> = {
  */
 export function KeyCurrentHud({
   stage,
+  trackName,
   runType,
   obstaclesCleared,
   obstaclesTotal,
@@ -57,7 +59,7 @@ export function KeyCurrentHud({
       <div className={`${styles.hudPanel} min-w-0 flex-1 px-3 py-1.5`}>
         <div className="flex items-center justify-between gap-2 text-[10px] font-black uppercase tracking-wider text-blue-100 sm:text-xs">
           <span className="truncate">
-            Home Base · Stage {stage.stageNumber}{' '}
+            {trackName} · Stage {stage.stageNumber}{' '}
             <span className="normal-case text-blue-200/85">
               — {RUN_LABEL[runType]}
             </span>

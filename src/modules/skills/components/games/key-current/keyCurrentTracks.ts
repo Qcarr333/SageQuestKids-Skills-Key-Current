@@ -132,6 +132,287 @@ const TRACK_A_HOME_BASE_STAGES: KeyCurrentStage[] = [
   },
 ];
 
+const TRACK_B_CENTER_REACH_STAGES: KeyCurrentStage[] = [
+  {
+    stageId: 'track_b_stage_1_f_g',
+    trackId: 'track_b_center_reach',
+    stageName: 'F and G',
+    stageNumber: 1,
+    activeKeys: ['F', 'G'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_2_j_h',
+    trackId: 'track_b_center_reach',
+    stageName: 'J and H',
+    stageNumber: 2,
+    activeKeys: ['J', 'H'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_3_r_u',
+    trackId: 'track_b_center_reach',
+    stageName: 'F and R',
+    stageNumber: 3,
+    activeKeys: ['F', 'R'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_4_t_y',
+    trackId: 'track_b_center_reach',
+    stageName: 'J and U',
+    stageNumber: 4,
+    activeKeys: ['J', 'U'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_5_v_n',
+    trackId: 'track_b_center_reach',
+    stageName: 'F and T',
+    stageNumber: 5,
+    activeKeys: ['F', 'T'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_6_b_m',
+    trackId: 'track_b_center_reach',
+    stageName: 'J and Y',
+    stageNumber: 6,
+    activeKeys: ['J', 'Y'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_7_f_v',
+    trackId: 'track_b_center_reach',
+    stageName: 'F and V',
+    stageNumber: 7,
+    activeKeys: ['F', 'V'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_8_j_n',
+    trackId: 'track_b_center_reach',
+    stageName: 'J and N',
+    stageNumber: 8,
+    activeKeys: ['J', 'N'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_9_f_b',
+    trackId: 'track_b_center_reach',
+    stageName: 'F and B',
+    stageNumber: 9,
+    activeKeys: ['F', 'B'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_10_j_m',
+    trackId: 'track_b_center_reach',
+    stageName: 'J and M',
+    stageNumber: 10,
+    activeKeys: ['J', 'M'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_11_left_center',
+    trackId: 'track_b_center_reach',
+    stageName: 'Left Center Reach Review',
+    stageNumber: 11,
+    activeKeys: ['F', 'G', 'R', 'T', 'V', 'B'],
+    practiceObstacleCount: 14,
+    proficiencyObstacleCount: 18,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_12_right_center',
+    trackId: 'track_b_center_reach',
+    stageName: 'Right Center Reach Review',
+    stageNumber: 12,
+    activeKeys: ['J', 'H', 'U', 'Y', 'N', 'M'],
+    practiceObstacleCount: 14,
+    proficiencyObstacleCount: 18,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_b_stage_13_center_review',
+    trackId: 'track_b_center_reach',
+    stageName: 'Mixed Center Reach Review',
+    stageNumber: 13,
+    activeKeys: ['F', 'G', 'R', 'T', 'V', 'B', 'J', 'H', 'U', 'Y', 'N', 'M'],
+    practiceObstacleCount: 16,
+    proficiencyObstacleCount: 24,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+];
+
+const TRACK_C_OUTER_REACH_STAGES: KeyCurrentStage[] = [
+  {
+    stageId: 'track_c_stage_1_a_q',
+    trackId: 'track_c_outer_reach',
+    stageName: 'A and Q',
+    stageNumber: 1,
+    activeKeys: ['A', 'Q'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_2_s_w',
+    trackId: 'track_c_outer_reach',
+    stageName: 'S and W',
+    stageNumber: 2,
+    activeKeys: ['S', 'W'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_3_d_e',
+    trackId: 'track_c_outer_reach',
+    stageName: 'D and E',
+    stageNumber: 3,
+    activeKeys: ['D', 'E'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_4_j_i',
+    trackId: 'track_c_outer_reach',
+    stageName: 'K and I',
+    stageNumber: 4,
+    activeKeys: ['K', 'I'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_5_k_o',
+    trackId: 'track_c_outer_reach',
+    stageName: 'L and O',
+    stageNumber: 5,
+    activeKeys: ['L', 'O'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_6_l_p',
+    trackId: 'track_c_outer_reach',
+    stageName: '; and P',
+    stageNumber: 6,
+    activeKeys: [';', 'P'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_7_a_z',
+    trackId: 'track_c_outer_reach',
+    stageName: 'A and Z',
+    stageNumber: 7,
+    activeKeys: ['A', 'Z'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_8_s_x',
+    trackId: 'track_c_outer_reach',
+    stageName: 'S and X',
+    stageNumber: 8,
+    activeKeys: ['S', 'X'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_9_d_c',
+    trackId: 'track_c_outer_reach',
+    stageName: 'D and C',
+    stageNumber: 9,
+    activeKeys: ['D', 'C'],
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 12,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_10_left_outer',
+    trackId: 'track_c_outer_reach',
+    stageName: 'Left Outer Reach Review',
+    stageNumber: 10,
+    activeKeys: ['A', 'S', 'D', 'Q', 'W', 'E', 'Z', 'X', 'C'],
+    practiceObstacleCount: 14,
+    proficiencyObstacleCount: 18,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_11_right_outer',
+    trackId: 'track_c_outer_reach',
+    stageName: 'Right Outer Reach Review',
+    stageNumber: 11,
+    activeKeys: ['J', 'K', 'L', 'I', 'O', 'P'],
+    practiceObstacleCount: 12,
+    proficiencyObstacleCount: 16,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+  {
+    stageId: 'track_c_stage_12_outer_review',
+    trackId: 'track_c_outer_reach',
+    stageName: 'Mixed Outer Reach Review',
+    stageNumber: 12,
+    activeKeys: ['A', 'S', 'D', 'Q', 'W', 'E', 'Z', 'X', 'C', 'J', 'K', 'L', 'I', 'O', 'P'],
+    practiceObstacleCount: 18,
+    proficiencyObstacleCount: 24,
+    failureMode: 'three_collision',
+    status: 'available',
+  },
+];
+
 export const KEY_CURRENT_TRACKS: KeyCurrentTrack[] = [
   {
     trackId: 'track_a_home_base',
@@ -144,15 +425,15 @@ export const KEY_CURRENT_TRACKS: KeyCurrentTrack[] = [
     trackId: 'track_b_center_reach',
     trackName: 'Center Reach',
     tagline: 'Reach out from your anchors and return home.',
-    status: 'coming_soon',
-    stages: [],
+    status: 'available',
+    stages: TRACK_B_CENTER_REACH_STAGES,
   },
   {
     trackId: 'track_c_outer_reach',
     trackName: 'Outer Reach',
     tagline: 'Explore the far corners of the keyboard.',
-    status: 'coming_soon',
-    stages: [],
+    status: 'available',
+    stages: TRACK_C_OUTER_REACH_STAGES,
   },
   {
     trackId: 'track_d_short_words',
@@ -283,16 +564,18 @@ export function getCurrentStage(stageId: string): KeyCurrentStage {
 }
 
 export function getNextStage(stageId: string): KeyCurrentStage | null {
-  const track = getCurrentTrack('track_a_home_base');
+  const currentStage = getCurrentStage(stageId);
+  const track = getCurrentTrack(currentStage.trackId);
   if (!track) return null;
   const index = track.stages.findIndex((stage) => stage.stageId === stageId);
   return index >= 0 ? track.stages[index + 1] ?? null : null;
 }
 
-export function getFirstIncompleteTrackAStage(
+export function getFirstIncompleteStage(
+  trackId: string,
   completedStageIds: string[],
 ): KeyCurrentStage {
-  const track = getCurrentTrack('track_a_home_base');
+  const track = getCurrentTrack(trackId);
   const stages = track?.stages ?? [TRACK_A_STAGE_1];
   return (
     stages.find((stage) => !completedStageIds.includes(stage.stageId)) ??
@@ -300,21 +583,71 @@ export function getFirstIncompleteTrackAStage(
   );
 }
 
-export function isTrackAStageUnlocked(
+export function isStageUnlocked(
   stageId: string,
   completedStageIds: string[],
 ): boolean {
-  const track = getCurrentTrack('track_a_home_base');
+  const stage = getCurrentStage(stageId);
+  const track = getCurrentTrack(stage.trackId);
   if (!track) return false;
+  if (!getAvailableTracks(completedStageIds).some((item) => item.trackId === track.trackId)) {
+    return false;
+  }
   const index = track.stages.findIndex((stage) => stage.stageId === stageId);
   if (index < 0) return false;
   if (index === 0) return true;
   return completedStageIds.includes(track.stages[index - 1].stageId);
 }
 
-export function isTrackAComplete(completedStageIds: string[]): boolean {
-  const track = getCurrentTrack('track_a_home_base');
+export function isTrackComplete(
+  trackId: string,
+  completedStageIds: string[],
+): boolean {
+  const track = getCurrentTrack(trackId);
   return Boolean(
-    track?.stages.every((stage) => completedStageIds.includes(stage.stageId)),
+    track &&
+      track.stages.length > 0 &&
+      track.stages.every((stage) => completedStageIds.includes(stage.stageId)),
   );
 }
+
+export function getAvailableTracks(completedStageIds: string[]): KeyCurrentTrack[] {
+  return KEY_CURRENT_TRACKS.filter((track) => {
+    if (track.trackId === 'track_a_home_base') return true;
+    if (track.trackId === 'track_b_center_reach') {
+      return isTrackComplete('track_a_home_base', completedStageIds);
+    }
+    if (track.trackId === 'track_c_outer_reach') {
+      return isTrackComplete('track_b_center_reach', completedStageIds);
+    }
+    return false;
+  });
+}
+
+export function getFirstPlayableStageAcrossTracks(
+  completedStageIds: string[],
+): KeyCurrentStage {
+  const availableTracks = getAvailableTracks(completedStageIds);
+  for (const track of availableTracks) {
+    if (!isTrackComplete(track.trackId, completedStageIds)) {
+      return getFirstIncompleteStage(track.trackId, completedStageIds);
+    }
+  }
+  const lastAvailableTrack = availableTracks[availableTracks.length - 1];
+  return lastAvailableTrack
+    ? getFirstIncompleteStage(lastAvailableTrack.trackId, completedStageIds)
+    : TRACK_A_STAGE_1;
+}
+
+export const getFirstIncompleteTrackAStage = (
+  completedStageIds: string[],
+): KeyCurrentStage =>
+  getFirstIncompleteStage('track_a_home_base', completedStageIds);
+
+export const isTrackAStageUnlocked = (
+  stageId: string,
+  completedStageIds: string[],
+): boolean => isStageUnlocked(stageId, completedStageIds);
+
+export const isTrackAComplete = (completedStageIds: string[]): boolean =>
+  isTrackComplete('track_a_home_base', completedStageIds);

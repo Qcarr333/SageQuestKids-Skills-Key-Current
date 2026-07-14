@@ -35,14 +35,15 @@ import { buildRunObstacles, countRequiredInputs } from './keyCurrentSequences';
 import {
   KEY_CURRENT_CHARACTERS,
   KEY_CURRENT_DIFFICULTIES,
+  KEY_CURRENT_TRACKS,
   getCurrentStage,
   getCurrentTrack,
-  getFirstIncompleteTrackAStage,
+  getFirstPlayableStageAcrossTracks,
   getKeyCurrentCharacter,
   getKeyCurrentDifficulty,
   getNextStage,
-  isTrackAComplete,
-  isTrackAStageUnlocked,
+  isStageUnlocked,
+  isTrackComplete,
 } from './keyCurrentTracks';
 import styles from './keyCurrent.module.css';
 import type { SkillPayloadPreview } from '../../../lib/runtime/skillsRuntimeTypes';
@@ -60,6 +61,12 @@ import type {
 } from './keyCurrentTypes';
 
 const GAME_KEY = 'key_current';
+
+const LEGACY_TRACK_B_STAGE_IDS = new Set([
+  'track_b_stage_7_left_center',
+  'track_b_stage_8_right_center',
+  'track_b_stage_9_center_review',
+]);
 
 const DEFAULT_SETTINGS: KeyCurrentSettings = {
   musicEnabled: true,
@@ -83,6 +90,26 @@ function createRunStats(runType: KeyCurrentRunType): KeyCurrentRunStats {
   };
 }
 
+function formatTrackCompletionStatus(
+  trackId: string,
+  completedStageIds: string[],
+): string {
+  if (isTrackComplete(trackId, completedStageIds)) {
+    return `${trackId}:complete`;
+  }
+  return `${trackId}:in_progress`;
+}
+
+function normalizeCompletedStageIds(
+  completedLessons: string[],
+  knownStages: KeyCurrentStage[],
+): string[] {
+  const knownStageIds = new Set(knownStages.map((stage) => stage.stageId));
+  return completedLessons.filter(
+    (stageId) => knownStageIds.has(stageId) && !LEGACY_TRACK_B_STAGE_IDS.has(stageId),
+  );
+}
+
 export function KeyCurrentGame() {
   return (
     <SkillsGameRuntimeShell gameKey={GAME_KEY}>
@@ -93,8 +120,10 @@ export function KeyCurrentGame() {
 
 function KeyCurrentExperience() {
   const runtime = useSkillsGameRuntime();
-  const trackA = useMemo(() => getCurrentTrack('track_a_home_base'), []);
-  const trackAStages = useMemo(() => trackA?.stages ?? [], [trackA]);
+  const allStages = useMemo(
+    () => KEY_CURRENT_TRACKS.flatMap((track) => track.stages),
+    [],
+  );
 
   /* ---------- settings + saved local preview progress ---------- */
 
@@ -107,26 +136,38 @@ function KeyCurrentExperience() {
     'track_a_stage_1_f_j',
   );
   const stage = useMemo(() => getCurrentStage(currentStageId), [currentStageId]);
-  const trackAComplete = isTrackAComplete(completedStageIds);
+  const currentTrack = getCurrentTrack(stage.trackId);
+  const currentTrackComplete = isTrackComplete(stage.trackId, completedStageIds);
 
   useEffect(() => {
     const progress = getUserGameProgress(GAME_KEY);
-    const completed = progress.completedLessons.filter((stageId) =>
-      trackAStages.some((trackStage) => trackStage.stageId === stageId),
+    const completed = normalizeCompletedStageIds(
+      progress.completedLessons,
+      allStages,
     );
     const savedStageId =
       typeof progress.settings.currentStageId === 'string'
         ? progress.settings.currentStageId
         : null;
-    const fallbackStage = getFirstIncompleteTrackAStage(completed);
+    const fallbackStage = getFirstPlayableStageAcrossTracks(completed);
     const savedStageIsUnlocked = savedStageId
-      ? isTrackAStageUnlocked(savedStageId, completed)
+      ? isStageUnlocked(savedStageId, completed)
       : false;
 
     setSavedXp(progress.xp);
     setSavedLevel(progress.level);
     setCompletedStageIds(completed);
     setBestAccuracy(progress.bestAccuracy);
+    if (completed.length !== progress.completedLessons.length) {
+      saveUserGameProgress({
+        ...progress,
+        completedLessons: completed,
+        settings: {
+          ...progress.settings,
+          trackBProgressResetFor1E1: true,
+        },
+      });
+    }
     setCurrentStageId(
       savedStageId && savedStageIsUnlocked ? savedStageId : fallbackStage.stageId,
     );
@@ -155,7 +196,7 @@ function KeyCurrentExperience() {
         ? (progress.settings.characterId as KeyCurrentSettings['characterId'])
         : current.characterId,
     }));
-  }, [trackAStages]);
+  }, [allStages]);
 
   const persistSettings = useCallback((next: KeyCurrentSettings) => {
     const progress = getUserGameProgress(GAME_KEY);
@@ -212,6 +253,7 @@ function KeyCurrentExperience() {
   const [promptToken, setPromptToken] = useState(0);
   const [runSummaries, setRunSummaries] = useState<KeyCurrentRunSummary[]>([]);
   const [previews, setPreviews] = useState<SkillPayloadPreview[]>([]);
+  const [restartReason, setRestartReason] = useState<string | null>(null);
 
   /* ---------- engine refs (game loop reads these, never stale state) ---------- */
 
@@ -231,6 +273,7 @@ function KeyCurrentExperience() {
   const timeoutsRef = useRef<number[]>([]);
   const musicRef = useRef<HTMLAudioElement | null>(null);
   const settingsRef = useRef(settings);
+  const restartPreviewLoggedRef = useRef(false);
 
   phaseRef.current = phase;
   pausedRef.current = paused;
@@ -339,6 +382,79 @@ function KeyCurrentExperience() {
     [applyProgressToDom],
   );
 
+  const finishRestart = useCallback(
+    (reason: string) => {
+      if (restartPreviewLoggedRef.current) return;
+      restartPreviewLoggedRef.current = true;
+
+      modeRef.current = 'hold';
+      inputLockedRef.current = true;
+      setRestartReason(reason);
+      setCharacterAnim('idle');
+
+      const stats = statsRef.current;
+      const stageForRun = activeStageRef.current;
+      stats.durationMs = runtime.getRoundDurationMs();
+      runtime.endRound();
+      stopMusic(false);
+
+      const summary = summarizeRun(
+        stats,
+        getKeyCurrentDifficulty(settingsRef.current.difficulty),
+      );
+      const roundResult = runtime.createRoundResult({
+        activityType:
+          stats.runType === 'guided_practice'
+            ? 'lesson_complete'
+            : 'challenge_complete',
+        lessonId: `${GAME_KEY}:${stageForRun.stageId}:${stats.runType}:restart`,
+        status: 'in_progress',
+        score: summary.accuracy,
+        accuracy: summary.accuracy,
+        accuracyFormat: 'percent',
+        durationMs: stats.durationMs,
+        difficulty: settingsRef.current.difficulty,
+        xpProposed: 0,
+        mistakeCount: stats.incorrectInputs,
+        metadata: runtime.createPreviewMetadata({
+          stageId: stageForRun.stageId,
+          trackId: stageForRun.trackId,
+          runType: stats.runType,
+          selectedCharacter: settingsRef.current.characterId,
+          difficulty: settingsRef.current.difficulty,
+          inputMode: summary.inputMode,
+          requiredInputs: stats.requiredInputs,
+          correctFirstAttempts: stats.correctFirstAttempts,
+          incorrectInputs: stats.incorrectInputs,
+          collisions: stats.collisions,
+          practiceBumps: stats.collisions,
+          obstaclesCleared: stats.obstaclesCleared,
+          completionType: 'in_progress',
+          proficiencyStatus: 'in_progress',
+          trackCompletionStatus: formatTrackCompletionStatus(
+            stageForRun.trackId,
+            completedStageIds,
+          ),
+          failureMode: stageForRun.failureMode,
+          restartReason: reason,
+          xpProposed: 0,
+          accuracy: summary.accuracy,
+        }),
+      });
+
+      const preview = runtime.createPayloadPreview(roundResult);
+      if (process.env.NODE_ENV === 'development') {
+        logSkillPayloadPreview(preview);
+      }
+      setPreviews((current) => [...current, preview]);
+
+      scheduleTimeout(() => {
+        setPhase('restart');
+      }, 650);
+    },
+    [completedStageIds, runtime, scheduleTimeout, stopMusic],
+  );
+
   /* ---------- collision ---------- */
 
   const handleCollision = useCallback(() => {
@@ -362,13 +478,21 @@ function KeyCurrentExperience() {
     const impactMs = collisionNumber === 1 ? 900 : collisionNumber === 2 ? 700 : 500;
 
     scheduleTimeout(() => {
-      // Track A is guided: never a fail state — bounce back and try again.
+      if (
+        activeStageRef.current.failureMode === 'three_collision' &&
+        statsRef.current.collisions >= 3
+      ) {
+        finishRestart('practice_bump_limit');
+        return;
+      }
+
+      // Track A is guided: never a fail state - bounce back and try again.
       patchObstacle(index, { status: 'approaching' });
       setCharacterAnim('run');
       inputLockedRef.current = false;
       modeRef.current = 'recover';
     }, impactMs);
-  }, [patchObstacle, scheduleTimeout, sfx]);
+  }, [finishRestart, patchObstacle, scheduleTimeout, sfx]);
 
   /* ---------- run completion ---------- */
 
@@ -384,6 +508,10 @@ function KeyCurrentExperience() {
 
     const summary = summarizeRun(stats, getKeyCurrentDifficulty(settingsRef.current.difficulty));
     const isGuided = stats.runType === 'guided_practice';
+    const metadataCompletedStageIds =
+      isGuided || completedStageIds.includes(stageForRun.stageId)
+        ? completedStageIds
+        : [...completedStageIds, stageForRun.stageId];
 
     const roundResult = runtime.createRoundResult({
       activityType: isGuided ? 'lesson_complete' : 'challenge_complete',
@@ -413,10 +541,11 @@ function KeyCurrentExperience() {
         proficiencyStatus: summary.completionType,
         xpProposed: summary.xpProposed,
         accuracy: summary.accuracy,
-        trackCompletionStatus:
-          !isGuided && getNextStage(stageForRun.stageId) === null
-            ? 'track_a_complete'
-            : 'in_progress',
+        trackCompletionStatus: formatTrackCompletionStatus(
+          stageForRun.trackId,
+          metadataCompletedStageIds,
+        ),
+        failureMode: stageForRun.failureMode,
       }),
     });
 
@@ -444,6 +573,8 @@ function KeyCurrentExperience() {
           ? progress.completedLessons
           : [...progress.completedLessons, stageForRun.stageId];
         const nextStage = getNextStage(stageForRun.stageId);
+        const nextPlayableStage =
+          nextStage ?? getFirstPlayableStageAcrossTracks(completedLessons);
         const saved = saveUserGameProgress({
           ...progress,
           xp: progress.xp + stageXp,
@@ -454,8 +585,17 @@ function KeyCurrentExperience() {
           },
           settings: {
             ...progress.settings,
-            currentStageId: nextStage?.stageId ?? stageForRun.stageId,
-            trackAComplete: nextStage ? false : true,
+            currentStageId: nextPlayableStage.stageId,
+            currentTrackId: nextPlayableStage.trackId,
+            trackAComplete: isTrackComplete('track_a_home_base', completedLessons),
+            trackBComplete: isTrackComplete(
+              'track_b_center_reach',
+              completedLessons,
+            ),
+            trackCComplete: isTrackComplete(
+              'track_c_outer_reach',
+              completedLessons,
+            ),
           },
         });
         setSavedXp(saved.xp);
@@ -472,7 +612,7 @@ function KeyCurrentExperience() {
       setPhase(isGuided ? 'run_complete' : 'stage_complete');
       setCharacterAnim('idle');
     }, 900);
-  }, [runtime, sfx, scheduleTimeout, stopMusic]);
+  }, [completedStageIds, runtime, sfx, scheduleTimeout, stopMusic]);
 
   /* ---------- input ---------- */
 
@@ -618,9 +758,11 @@ function KeyCurrentExperience() {
       progressRef.current = 0;
       modeRef.current = 'hold';
       inputLockedRef.current = false;
+      restartPreviewLoggedRef.current = false;
       setUrgent(false);
       urgentRef.current = false;
       setKeyFlash(null);
+      setRestartReason(null);
       setRunType(type);
       runTypeRef.current = type;
       setPaused(false);
@@ -652,26 +794,32 @@ function KeyCurrentExperience() {
 
   const selectStage = useCallback(
     (stageId: string) => {
-      if (!isTrackAStageUnlocked(stageId, completedStageIds)) return;
+      if (!isStageUnlocked(stageId, completedStageIds)) return;
       setCurrentStageId(stageId);
       persistCurrentStage(stageId);
     },
     [completedStageIds, persistCurrentStage],
   );
 
-  const continueTrackA = useCallback(() => {
-    const nextStage = getFirstIncompleteTrackAStage(completedStageIds);
+  const continueAdventure = useCallback(() => {
+    const nextStage = getFirstPlayableStageAcrossTracks(completedStageIds);
     startStage(nextStage);
   }, [completedStageIds, startStage]);
 
   const continueAfterStage = useCallback(() => {
-    const nextStage = getNextStage(activeStageRef.current.stageId);
+    const nextStage =
+      getNextStage(activeStageRef.current.stageId) ??
+      getFirstPlayableStageAcrossTracks(completedStageIds);
+    if (nextStage.stageId === activeStageRef.current.stageId) {
+      setPhase('landing');
+      return;
+    }
     if (!nextStage) {
       setPhase('landing');
       return;
     }
     startStage(nextStage);
-  }, [startStage]);
+  }, [completedStageIds, startStage]);
 
   const handleTryFaster = useCallback(() => {
     const order = KEY_CURRENT_DIFFICULTIES.map((d) => d.id);
@@ -682,6 +830,15 @@ function KeyCurrentExperience() {
     setPreviews([]);
     startStage();
   }, [startStage, updateSettings]);
+
+  const handleMakeEasier = useCallback(() => {
+    const order = KEY_CURRENT_DIFFICULTIES.map((d) => d.id);
+    const currentIndex = order.indexOf(settingsRef.current.difficulty);
+    const nextId = order[Math.max(0, currentIndex - 1)];
+    updateSettings({ difficulty: nextId });
+    restartPreviewLoggedRef.current = false;
+    startRun(runTypeRef.current, activeStageRef.current);
+  }, [startRun, updateSettings]);
 
   /* ---------- pause / resume / exit ---------- */
 
@@ -728,8 +885,15 @@ function KeyCurrentExperience() {
     setPhase('landing');
   }, [clearAllTimeouts, runtime, stopMusic]);
 
+  const returnToTrackMap = useCallback(() => {
+    const nextStage = getFirstPlayableStageAcrossTracks(completedStageIds);
+    setCurrentStageId(nextStage.stageId);
+    persistCurrentStage(nextStage.stageId);
+    exitToLanding();
+  }, [completedStageIds, exitToLanding, persistCurrentStage]);
+
   const restartRun = useCallback(() => {
-    startRun(runTypeRef.current);
+    startRun(runTypeRef.current, activeStageRef.current);
   }, [startRun]);
 
   const toggleMusic = useCallback(() => {
@@ -764,7 +928,10 @@ const upcoming2 = null;
       : null;
 
   const inRunPhases =
-    phase === 'countdown' || phase === 'running' || phase === 'run_complete';
+    phase === 'countdown' ||
+    phase === 'running' ||
+    phase === 'run_complete' ||
+    phase === 'restart';
 
   const [isWideDesktop, setIsWideDesktop] = useState(false);
   useEffect(() => {
@@ -778,6 +945,16 @@ const upcoming2 = null;
   const guidedSummary = runSummaries.find(
     (summary) => summary.runType === 'guided_practice',
   );
+  const nextStageInTrack = getNextStage(stage.stageId);
+  const nextAdventureStage =
+    nextStageInTrack ??
+    (currentTrackComplete
+      ? getFirstPlayableStageAcrossTracks(completedStageIds)
+      : null);
+  const completionNextStage =
+    nextAdventureStage && nextAdventureStage.stageId !== stage.stageId
+      ? nextAdventureStage
+      : null;
 
   return (
     <main
@@ -816,17 +993,16 @@ const upcoming2 = null;
         <div className="relative mx-auto flex min-h-dvh w-full max-w-4xl flex-col justify-center px-3 py-4">
           <KeyCurrentLanding
             stage={stage}
-            stages={trackAStages}
+            tracks={KEY_CURRENT_TRACKS}
             settings={settings}
             onUpdateSettings={updateSettings}
             onStart={() => startStage()}
-            onContinue={continueTrackA}
+            onContinue={continueAdventure}
             onSelectStage={selectStage}
             savedXp={savedXp}
             savedLevel={savedLevel}
             completedStageIds={completedStageIds}
             bestAccuracy={bestAccuracy}
-            trackAComplete={trackAComplete}
           />
         </div>
       )}
@@ -835,6 +1011,7 @@ const upcoming2 = null;
         <div className="relative mx-auto flex h-dvh w-full max-w-5xl flex-col gap-2 px-2 py-2 sm:px-4 sm:py-3">
           <KeyCurrentHud
             stage={stage}
+            trackName={currentTrack?.trackName ?? 'Track'}
             runType={runType}
             obstaclesCleared={obstacles.filter((o) => o.status === 'removed' || o.status === 'cleared').length}
             obstaclesTotal={obstacles.length}
@@ -860,6 +1037,7 @@ const upcoming2 = null;
                 character={character}
                 anim={characterAnim}
                 showBonkStars={characterAnim === 'collide'}
+                showShadow
                 className={styles.character}
               />
 
@@ -965,6 +1143,7 @@ const upcoming2 = null;
                     </p>
                     <button
                       type="button"
+                      autoFocus
                       onClick={() => startRun('proficiency_check')}
                       className={`${styles.goldButton} w-full px-4 py-3 text-lg`}
                     >
@@ -976,6 +1155,49 @@ const upcoming2 = null;
                       className="text-sm font-bold text-sky-200/80 underline-offset-2 hover:underline"
                     >
                       Take a break instead
+                    </button>
+                  </div>
+                </div>
+              )}
+
+              {phase === 'restart' && (
+                <div className="absolute inset-0 z-50 grid place-items-center bg-blue-950/55 p-4 backdrop-blur-[2px]">
+                  <div className={`${styles.seaPanel} flex w-full max-w-sm flex-col items-center gap-3 p-5 text-center`}>
+                    <h2 className="text-2xl font-black text-amber-200">
+                      Good try! Let&apos;s clear the path again.
+                    </h2>
+                    <p className="text-sm font-semibold text-sky-100/85">
+                      Practice bump limit reached. Take a breath and try this
+                      short run again.
+                    </p>
+                    <p className="text-xs text-sky-100/70">
+                      {restartReason === 'practice_bump_limit'
+                        ? 'Three practice bumps paused this run.'
+                        : 'This run is ready to retry.'}
+                    </p>
+                    <button
+                      type="button"
+                      autoFocus
+                      onClick={restartRun}
+                      className={`${styles.goldButton} w-full px-4 py-3 text-lg`}
+                    >
+                      Try Again
+                    </button>
+                    {settings.difficulty !== 'easy' && (
+                      <button
+                        type="button"
+                        onClick={handleMakeEasier}
+                        className={`${styles.blueButton} w-full px-4 py-3 text-lg`}
+                      >
+                        Make It Easier
+                      </button>
+                    )}
+                    <button
+                      type="button"
+                      onClick={exitToLanding}
+                      className="text-sm font-bold text-sky-200/80 underline-offset-2 hover:underline"
+                    >
+                      Back to Track Map
                     </button>
                   </div>
                 </div>
@@ -1002,12 +1224,13 @@ const upcoming2 = null;
             settings={settings}
             previews={previews}
             canTryFaster={settings.difficulty !== 'expert'}
-            nextStage={getNextStage(stage.stageId)}
-            trackAComplete={trackAComplete}
+            nextStage={completionNextStage}
+            trackName={currentTrack?.trackName ?? 'Track'}
+            trackComplete={currentTrackComplete}
             onReplay={() => startStage()}
             onContinue={continueAfterStage}
             onTryFaster={handleTryFaster}
-            onBackToShore={exitToLanding}
+            onBackToShore={returnToTrackMap}
           />
         </div>
       )}

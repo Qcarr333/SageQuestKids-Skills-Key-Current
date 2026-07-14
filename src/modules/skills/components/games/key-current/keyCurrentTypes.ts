@@ -95,6 +95,7 @@ export type KeyCurrentPhase =
   | 'countdown'
   | 'running'
   | 'run_complete'
+  | 'restart'
   | 'stage_complete';
 
 export type KeyCurrentSettings = {

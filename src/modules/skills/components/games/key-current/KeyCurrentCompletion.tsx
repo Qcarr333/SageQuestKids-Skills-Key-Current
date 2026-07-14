@@ -24,7 +24,8 @@ type KeyCurrentCompletionProps = {
   previews: SkillPayloadPreview[];
   canTryFaster: boolean;
   nextStage: KeyCurrentStage | null;
-  trackAComplete: boolean;
+  trackName: string;
+  trackComplete: boolean;
   onReplay: () => void;
   onContinue: () => void;
   onTryFaster: () => void;
@@ -49,7 +50,8 @@ export function KeyCurrentCompletion({
   previews,
   canTryFaster,
   nextStage,
-  trackAComplete,
+  trackName,
+  trackComplete,
   onReplay,
   onContinue,
   onTryFaster,
@@ -74,11 +76,11 @@ export function KeyCurrentCompletion({
 
       <div className="text-center">
         <h2 className="text-3xl font-black text-amber-200 sm:text-4xl">
-          {trackAComplete ? 'Track A complete' : 'Home Base stage complete'}
+          {trackComplete ? `${trackName} complete` : `${trackName} stage complete`}
         </h2>
         <p className="mt-1 text-sm text-sky-100/85">
-          {stage.stageName} is complete. Forward progress stays open, and
-          replay is always available.
+          {stage.stageName} is complete. Great reach practice! Forward
+          progress stays open, and replay is always available.
         </p>
       </div>
 
@@ -150,22 +152,24 @@ export function KeyCurrentCompletion({
       </p>
 
       <div className="flex w-full max-w-md flex-col gap-2">
-        {!trackAComplete && nextStage && (
+        {nextStage && (
           <button
             type="button"
+            autoFocus
             onClick={onContinue}
             className={`${styles.goldButton} w-full px-6 py-3 text-lg`}
           >
-            Continue to Stage {nextStage.stageNumber}
+            Continue to {nextStage.stageName}
           </button>
         )}
-        {trackAComplete && (
+        {trackComplete && !nextStage && (
           <button
             type="button"
+            autoFocus
             onClick={onBackToShore}
             className={`${styles.goldButton} w-full px-6 py-3 text-lg`}
           >
-            Return to Track A map
+            Return to Track Map
           </button>
         )}
         {offerFaster && (
@@ -184,13 +188,13 @@ export function KeyCurrentCompletion({
         >
           Replay this stage
         </button>
-        {!trackAComplete && (
+        {(!trackComplete || nextStage) && (
           <button
             type="button"
             onClick={onBackToShore}
             className="w-full rounded-xl border border-cyan-200/35 bg-blue-950/65 px-6 py-3 text-sm font-black text-cyan-100 transition hover:bg-blue-900/75"
           >
-            Back to Track A map
+            Back to Track Map
           </button>
         )}
       </div>

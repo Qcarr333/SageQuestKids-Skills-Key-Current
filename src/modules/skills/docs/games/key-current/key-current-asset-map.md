@@ -1,7 +1,57 @@
 # Key Current — Asset Map
 
-Checkpoint: **1D - Track A Home Base V1 expansion** (assets unchanged from
-1C/1C.1). Inspected/generated: 2026-07-13.
+Checkpoint: **1F - Track C Outer Reach Expansion** (assets unchanged
+from 1C/1C.1). Inspected/generated: 2026-07-14.
+
+## 1F note - no new art or Higgsfield usage
+
+Checkpoint 1F is a Track C curriculum, progression, HUD label, key-badge
+overflow, and keyboard-accessibility checkpoint. No generated assets were
+changed, no new art was requested, and Higgsfield was not used.
+
+The accepted visual setup remains intact:
+
+- generated gate, causeway texture, and six runner images are reused;
+- all six characters remain visible, selectable, unlocked, and cosmetic-only;
+- future/upcoming gates remain hidden for V1;
+- the road/causeway perspective, lane texture scroll tuning, and gate/runner
+  composition are preserved;
+- the landing/settings key badge adjustment is contained to large active-key
+  sets;
+- the accepted keyboard helper row offsets are preserved and input mechanics
+  are unchanged.
+
+## 1E.1 note - no new art or Higgsfield usage
+
+Checkpoint 1E.1 is a landing, sequence-safety, Track B curriculum, local
+preview compatibility, and keyboard helper alignment cleanup. No generated
+assets were changed, no new art was requested, and Higgsfield was not used.
+
+The accepted visual setup remains intact:
+
+- generated gate, causeway texture, and six runner images are reused;
+- all six characters remain visible, selectable, unlocked, and cosmetic-only;
+- future/upcoming gates remain hidden for V1;
+- the road/causeway perspective, lane texture scroll tuning, and gate/runner
+  composition are preserved;
+- the bottom-row keyboard adjustment is layout-only and does not affect input
+  mechanics.
+
+## 1E note - no new art or Higgsfield usage
+
+Checkpoint 1E is a progression, Track B content, landing UX, and mobile polish
+checkpoint. No generated assets were changed, no new art was requested, and
+Higgsfield was not used.
+
+The accepted visual setup remains intact:
+
+- generated gate, causeway texture, and six runner images are reused;
+- all six characters remain visible, selectable, unlocked, and cosmetic-only;
+- future/upcoming gates remain hidden for V1;
+- the road/causeway perspective, lane texture scroll tuning, and gate/runner
+  composition are preserved;
+- the landing stray shadow fix is code-only: the character shadow is now
+  opt-in for the in-game runner while the landing preview uses its pedestal.
 
 ## 1D note - no new art or Higgsfield usage
 
