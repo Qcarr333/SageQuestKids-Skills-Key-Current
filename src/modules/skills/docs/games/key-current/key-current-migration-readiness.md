@@ -39,6 +39,42 @@ The game imports only:
 
 No `/gaming` assumptions, no hardcoded host URLs, no API calls.
 
+## 1G transfer-readiness note
+
+Checkpoint 1G completes the four-track V1 gameplay scope by adding Track D
+Short Words, but the game is **still not ready for main-project transfer**.
+Final 1H QA, optimization, docs review, and the transfer-readiness closure
+audit remain pending.
+
+1G behavior that should transfer later:
+
+- Track D Short Words has 10 stages and unlocks only after Track C completion.
+- Track D uses curated allowlisted word banks only; words are static, 2-5
+  letters, and no punctuation is required for Track D V1.
+- Word gates reuse the existing generated gate art and display the full word
+  in code. Letters complete left-to-right, repeated letters are required in
+  order, wrong input does not advance progress, and partial word progress is
+  preserved through normal collision/recovery.
+- Every Track D stage uses Guided Practice followed by Proficiency Check.
+  Guided runs prefer easier/orderly bank traversal; Proficiency Checks shuffle
+  from the curated bank and avoid immediate repeats where possible.
+- Track D uses the same supportive three-practice-bump restart model as
+  Tracks B/C. Track A remains guided/no-hard-fail.
+- Completing Track D Stage 10 stores local preview Track D completion plus a
+  `keyCurrentV1GameplayComplete` flag. This is still local preview state, not
+  production persistence.
+- Runtime metadata remains aggregate-only and includes word gate totals for
+  Track D. No raw typed sequences, raw key streams, word attempt logs, pointer
+  trails, or frame arrays are recorded.
+- The kid-safe guard remains internal; Track D banks are validated through it,
+  and no dynamic word-generation path was added.
+- Existing punctuation support, the visual bottom row `Z X C V B N M , .`,
+  and the accepted keyboard row offsets are preserved.
+
+Still no Supabase writes, migrations, `/api/skills`, raw telemetry, assignment
+logic, dashboards, voice MP3 generation, browser speech synthesis, Higgsfield
+usage, generated art changes, playfield redesign, or transfer work.
+
 ## 1F.1 transfer-readiness note
 
 Checkpoint 1F.1 adds punctuation-key support and revises Track B/C stage

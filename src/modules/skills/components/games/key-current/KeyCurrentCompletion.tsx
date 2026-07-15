@@ -63,6 +63,17 @@ export function KeyCurrentCompletion({
   const offerFaster = canTryFaster && earnedTryFasterOffer(runSummaries);
   const character = getKeyCurrentCharacter(settings.characterId);
   const showDebugPanels = process.env.NODE_ENV === 'development';
+  const shortWordsComplete = stage.trackId === 'track_d_short_words' && trackComplete;
+  const heading = shortWordsComplete
+    ? 'Short Words complete!'
+    : trackComplete
+      ? `${trackName} complete`
+      : `${trackName} stage complete`;
+  const summaryCopy = shortWordsComplete
+    ? 'You cleared all four Key Current tracks! V1 gameplay complete - progress is still local preview only.'
+    : stage.trackId === 'track_d_short_words'
+      ? `${stage.stageName} is complete. Great word typing! Forward progress stays open, and replay is always available.`
+      : `${stage.stageName} is complete. Great reach practice! Forward progress stays open, and replay is always available.`;
 
   return (
     <div className="mx-auto flex w-full max-w-2xl flex-col items-center gap-4 px-1 py-2">
@@ -76,11 +87,10 @@ export function KeyCurrentCompletion({
 
       <div className="text-center">
         <h2 className="text-3xl font-black text-amber-200 sm:text-4xl">
-          {trackComplete ? `${trackName} complete` : `${trackName} stage complete`}
+          {heading}
         </h2>
         <p className="mt-1 text-sm text-sky-100/85">
-          {stage.stageName} is complete. Great reach practice! Forward
-          progress stays open, and replay is always available.
+          {summaryCopy}
         </p>
       </div>
 

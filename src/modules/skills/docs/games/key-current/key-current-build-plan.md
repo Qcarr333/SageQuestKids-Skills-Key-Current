@@ -1,5 +1,47 @@
 # Key Current — Build Plan
 
+## Checkpoint 1G - Track D Short Words Expansion
+
+Goal: add Track D Short Words as the final playable V1 learning track while
+preserving Tracks A-C, the accepted playfield visuals, punctuation support,
+the scalable landing dashboard, and local-preview-only runtime behavior.
+
+Delivered:
+
+- **Track D implemented:** Short Words now has 10 stages and unlocks after
+  Track C completion. Completing Stage 10 marks Track D complete and stores a
+  local `keyCurrentV1GameplayComplete` preview flag.
+- **Curated word banks:** Track D uses static allowlisted word banks only.
+  Words are 2-5 letters, no punctuation is required, and the mixed review
+  reuses words from the earlier Track D stages.
+- **Word-gate model:** Track D gates display the full word on the existing
+  generated gate art. Correct letters advance left-to-right, repeated letters
+  are required in order, wrong inputs do not advance, and partial progress is
+  preserved through normal collision/recovery.
+- **Guided Practice and Proficiency Check:** every Track D stage keeps the
+  same Guided Practice -> Proficiency Check -> Stage Complete flow. Guided
+  word runs prefer easy/orderly bank traversal; Proficiency Checks shuffle the
+  curated bank without immediate repeats where possible.
+- **Safety guard:** Track D word banks pass through the internal kid-safe
+  guard used by generated letter sequences. The blocked terms remain internal,
+  and Track D never dynamically generates words.
+- **Landing/HUD/completion:** Track D appears in the existing Track A-D
+  dashboard with compact stage rows and `0/10` through `10/10` counts. The
+  current-stage panel shows a compact word-length label instead of word-bank
+  chips, the HUD reads `Short Words - Stage X`, and final Track D completion
+  names the four-track V1 gameplay-complete state.
+- **Runtime metadata:** preview payload metadata remains aggregate-only and
+  now includes `wordGatesCleared` and `totalWordGates` for word runs. No raw
+  typed sequences, raw key streams, word attempt logs, pointer trails, or
+  frame arrays are recorded.
+- **Preservation:** no Higgsfield usage, no new/generated art, no playfield
+  redesign, no accepted keyboard row offset changes, no punctuation support
+  regressions, no future-gate re-enable, no Supabase, no backend API, no
+  dashboard/assignment behavior, and no transfer work were added.
+
+Transfer readiness still requires Checkpoint 1H final V1 QA, optimization,
+docs, and transfer-readiness closure.
+
 ## Checkpoint 1F.1 - Punctuation keyboard support + Track B/C bridge revision
 
 Goal: stabilize punctuation-key input and smooth the Track B / Track C learning

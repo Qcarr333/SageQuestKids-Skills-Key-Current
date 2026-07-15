@@ -81,6 +81,7 @@ function trackStateLabel(input: {
 }
 
 function compactStageLabel(stage: KeyCurrentStage) {
+  if (stage.targetKind === 'word') return stage.stageName;
   if (stage.stageName.toLowerCase().includes('mixed')) return 'Mixed Review';
   if (stage.activeKeys.length > 0) return stage.activeKeys.join(' ');
   return stage.stageName;
@@ -105,6 +106,7 @@ export function KeyCurrentLanding({
   const continueStage = getFirstPlayableStageAcrossTracks(completedStageIds);
   const showSecondaryStart =
     stageCompleted || stage.stageId !== continueStage.stageId;
+  const isWordStage = stage.targetKind === 'word';
   const useCompactKeyBadges = stage.activeKeys.length >= 8;
   const availableTrackIds = useMemo(
     () => getAvailableTracks(completedStageIds).map((track) => track.trackId),
@@ -206,25 +208,31 @@ export function KeyCurrentLanding({
                 {stage.stageName}
               </p>
             </div>
-            <div
-              className={`flex min-w-0 flex-wrap justify-end gap-1 ${
-                useCompactKeyBadges ? 'max-w-[9.5rem] sm:max-w-[13rem]' : 'flex-none'
-              }`}
-              aria-hidden
-            >
-              {stage.activeKeys.map((key) => (
-                <span
-                  key={key}
-                  className={`grid place-items-center rounded-lg border-2 border-amber-300 bg-gradient-to-b from-amber-100 to-amber-300 font-black text-amber-950 shadow-[0_4px_0_rgba(146,64,14,0.6)] ${
-                    useCompactKeyBadges
-                      ? 'h-7 min-w-7 px-1 text-sm'
-                      : 'h-10 w-10 text-lg'
-                  }`}
-                >
-                  {key}
-                </span>
-              ))}
-            </div>
+            {isWordStage ? (
+              <span className="max-w-[9rem] rounded-full border border-amber-200/60 bg-amber-300/20 px-3 py-1 text-right text-xs font-black uppercase text-amber-100 sm:max-w-[12rem]">
+                {stage.wordLengthLabel ?? 'Words'}
+              </span>
+            ) : (
+              <div
+                className={`flex min-w-0 flex-wrap justify-end gap-1 ${
+                  useCompactKeyBadges ? 'max-w-[9.5rem] sm:max-w-[13rem]' : 'flex-none'
+                }`}
+                aria-hidden
+              >
+                {stage.activeKeys.map((key) => (
+                  <span
+                    key={key}
+                    className={`grid place-items-center rounded-lg border-2 border-amber-300 bg-gradient-to-b from-amber-100 to-amber-300 font-black text-amber-950 shadow-[0_4px_0_rgba(146,64,14,0.6)] ${
+                      useCompactKeyBadges
+                        ? 'h-7 min-w-7 px-1 text-sm'
+                        : 'h-10 w-10 text-lg'
+                    }`}
+                  >
+                    {key}
+                  </span>
+                ))}
+              </div>
+            )}
           </div>
 
           <fieldset>

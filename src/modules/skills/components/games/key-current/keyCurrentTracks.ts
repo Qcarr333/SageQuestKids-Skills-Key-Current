@@ -512,6 +512,169 @@ const TRACK_C_OUTER_REACH_STAGES: KeyCurrentStage[] = [
   },
 ];
 
+const TRACK_D_WORD_BANKS = {
+  twoLetter1: ['IN', 'ON', 'UP', 'GO', 'TO', 'WE', 'ME', 'HE', 'AM', 'AT'],
+  twoLetter2: ['IT', 'IS', 'NO', 'BE', 'BY', 'MY', 'OR', 'SO', 'DO', 'IF'],
+  threeStarter: ['CAT', 'DOG', 'SUN', 'MAP', 'CUP', 'PEN', 'HAT', 'TOP', 'RED', 'WEB'],
+  threeAnimalObject: ['OWL', 'FOX', 'BUG', 'BEE', 'ANT', 'BAT', 'LOG', 'BOX', 'JAM', 'KID'],
+  threeAction: ['RUN', 'HOP', 'TAP', 'SIT', 'DIG', 'MIX', 'FIX', 'ROW', 'WIN', 'TRY'],
+  fourSimple: ['STAR', 'BIRD', 'FROG', 'KITE', 'BOAT', 'MOON', 'TREE', 'FISH', 'SAND', 'WIND'],
+  fourActionSchool: ['READ', 'PLAY', 'JUMP', 'WALK', 'LOOK', 'FIND', 'MAKE', 'HELP', 'GROW', 'DRAW'],
+  fiveSimple: ['APPLE', 'BEACH', 'CLOUD', 'RIVER', 'WATER', 'PLANT', 'STONE', 'TRAIL', 'LIGHT', 'GREEN'],
+  fiveAdventureSea: ['OCEAN', 'SHORE', 'WAVES', 'SAILS', 'BRAVE', 'QUEST', 'MOUNT', 'CORAL', 'TIDES', 'BLOOM'],
+};
+
+const TRACK_D_MIXED_REVIEW_WORDS = [
+  'IN',
+  'UP',
+  'GO',
+  'IT',
+  'NO',
+  'CAT',
+  'DOG',
+  'SUN',
+  'OWL',
+  'FOX',
+  'RUN',
+  'TAP',
+  'STAR',
+  'KITE',
+  'READ',
+  'PLAY',
+  'APPLE',
+  'BEACH',
+  'OCEAN',
+  'SHORE',
+];
+
+function uniqueWordKeys(words: string[]): string[] {
+  const keys: string[] = [];
+  for (const word of words) {
+    for (const key of word) {
+      if (!keys.includes(key)) keys.push(key);
+    }
+  }
+  return keys;
+}
+
+function createWordStage(input: {
+  stageId: string;
+  stageName: string;
+  stageNumber: number;
+  wordBank: string[];
+  wordLengthLabel: string;
+  practiceObstacleCount: number;
+  proficiencyObstacleCount: number;
+}): KeyCurrentStage {
+  return {
+    stageId: input.stageId,
+    trackId: 'track_d_short_words',
+    stageName: input.stageName,
+    stageNumber: input.stageNumber,
+    targetKind: 'word',
+    activeKeys: uniqueWordKeys(input.wordBank),
+    wordBank: input.wordBank,
+    wordLengthLabel: input.wordLengthLabel,
+    practiceObstacleCount: input.practiceObstacleCount,
+    proficiencyObstacleCount: input.proficiencyObstacleCount,
+    failureMode: 'three_collision',
+    status: 'available',
+  };
+}
+
+const TRACK_D_SHORT_WORD_STAGES: KeyCurrentStage[] = [
+  createWordStage({
+    stageId: 'track_d_stage_1_two_letter_words_1',
+    stageName: 'Two-Letter Words 1',
+    stageNumber: 1,
+    wordBank: TRACK_D_WORD_BANKS.twoLetter1,
+    wordLengthLabel: '2-letter words',
+    practiceObstacleCount: 6,
+    proficiencyObstacleCount: 8,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_2_two_letter_words_2',
+    stageName: 'Two-Letter Words 2',
+    stageNumber: 2,
+    wordBank: TRACK_D_WORD_BANKS.twoLetter2,
+    wordLengthLabel: '2-letter words',
+    practiceObstacleCount: 6,
+    proficiencyObstacleCount: 8,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_3_three_letter_starter_words',
+    stageName: 'Three-Letter Starter Words',
+    stageNumber: 3,
+    wordBank: TRACK_D_WORD_BANKS.threeStarter,
+    wordLengthLabel: '3-letter words',
+    practiceObstacleCount: 6,
+    proficiencyObstacleCount: 8,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_4_three_letter_animal_object_words',
+    stageName: 'Three-Letter Animal/Object Words',
+    stageNumber: 4,
+    wordBank: TRACK_D_WORD_BANKS.threeAnimalObject,
+    wordLengthLabel: '3-letter words',
+    practiceObstacleCount: 6,
+    proficiencyObstacleCount: 8,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_5_three_letter_action_words',
+    stageName: 'Three-Letter Action Words',
+    stageNumber: 5,
+    wordBank: TRACK_D_WORD_BANKS.threeAction,
+    wordLengthLabel: '3-letter words',
+    practiceObstacleCount: 6,
+    proficiencyObstacleCount: 8,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_6_four_letter_simple_words',
+    stageName: 'Four-Letter Simple Words',
+    stageNumber: 6,
+    wordBank: TRACK_D_WORD_BANKS.fourSimple,
+    wordLengthLabel: '4-letter words',
+    practiceObstacleCount: 6,
+    proficiencyObstacleCount: 8,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_7_four_letter_action_school_words',
+    stageName: 'Four-Letter Action/School Words',
+    stageNumber: 7,
+    wordBank: TRACK_D_WORD_BANKS.fourActionSchool,
+    wordLengthLabel: '4-letter words',
+    practiceObstacleCount: 6,
+    proficiencyObstacleCount: 8,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_8_five_letter_simple_words',
+    stageName: 'Five-Letter Simple Words',
+    stageNumber: 8,
+    wordBank: TRACK_D_WORD_BANKS.fiveSimple,
+    wordLengthLabel: '5-letter words',
+    practiceObstacleCount: 5,
+    proficiencyObstacleCount: 7,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_9_five_letter_adventure_sea_words',
+    stageName: 'Five-Letter Adventure/Sea Words',
+    stageNumber: 9,
+    wordBank: TRACK_D_WORD_BANKS.fiveAdventureSea,
+    wordLengthLabel: '5-letter words',
+    practiceObstacleCount: 5,
+    proficiencyObstacleCount: 7,
+  }),
+  createWordStage({
+    stageId: 'track_d_stage_10_mixed_short_words_review',
+    stageName: 'Mixed Short Words Review',
+    stageNumber: 10,
+    wordBank: TRACK_D_MIXED_REVIEW_WORDS,
+    wordLengthLabel: 'Mixed short words',
+    practiceObstacleCount: 8,
+    proficiencyObstacleCount: 10,
+  }),
+];
+
 export const KEY_CURRENT_TRACKS: KeyCurrentTrack[] = [
   {
     trackId: 'track_a_home_base',
@@ -538,8 +701,8 @@ export const KEY_CURRENT_TRACKS: KeyCurrentTrack[] = [
     trackId: 'track_d_short_words',
     trackName: 'Short Words',
     tagline: 'Put your keys together into little words.',
-    status: 'coming_soon',
-    stages: [],
+    status: 'available',
+    stages: TRACK_D_SHORT_WORD_STAGES,
   },
 ];
 
@@ -718,6 +881,9 @@ export function getAvailableTracks(completedStageIds: string[]): KeyCurrentTrack
     }
     if (track.trackId === 'track_c_outer_reach') {
       return isTrackComplete('track_b_center_reach', completedStageIds);
+    }
+    if (track.trackId === 'track_d_short_words') {
+      return isTrackComplete('track_c_outer_reach', completedStageIds);
     }
     return false;
   });

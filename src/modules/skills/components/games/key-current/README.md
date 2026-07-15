@@ -1,9 +1,9 @@
 # Key Current — game module
 
 Single-lane, elevated third-person educational keyboard runner set in Skills
-Sea. The character runs forward automatically; the learner clears letter
-gates by pressing (desktop/Chromebook) or tapping (mobile/tablet) the correct
-key before the character reaches them.
+Sea. The character runs forward automatically; the learner clears letter and
+word gates by pressing (desktop/Chromebook) or tapping (mobile/tablet) the
+correct keys before the character reaches them.
 
 Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-design-spec.md`
 
@@ -19,8 +19,16 @@ Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-desi
   D/C, D/E, D/E/C, S/X, S/W, S/W/X, A/Z, A/Q, A/Q/Z, K/I, K/,/I,
   L/O, L/./O, ;/P, left/right outer reach reviews, and mixed outer reach
   review
-- Every Track A, Track B, and Track C stage has Guided Practice followed by a
+- Track D / Short Words:
+  10 curated short-word stages using static allowlisted word banks, with
+  two-letter, three-letter, four-letter, five-letter, and mixed review runs
+- Every Track A, Track B, Track C, and Track D stage has Guided Practice followed by a
   Proficiency Check
+- Track D word gates display the full word on the existing gate art; correct
+  letters complete left-to-right, repeated letters are required in order, and
+  wrong input does not advance the word
+- Track D uses curated word banks only; no random or AI-generated words are
+  produced, and words are validated through the internal safety guard
 - Scalable Track A-D dashboard with compact progress rows, one expanded track,
   `Continue Adventure`, hidden duplicate start actions, and replay for
   unlocked/completed stages
@@ -29,7 +37,7 @@ Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-desi
   including semicolon/shifted-colon, comma, and period support
 - Visual keyboard bottom row includes `Z X C V B N M , .`
 - Harmless bounce/retry collisions; Track A never hard-fails
-- Track B and Track C use a supportive three-practice-bump restart state with
+- Track B, Track C, and Track D use a supportive three-practice-bump restart state with
   Try Again and Make It Easier
 - HUD labels use the actual current track name and track-local stage number
 - Large current-stage key badge sets wrap into compact chips inside the
@@ -42,7 +50,8 @@ Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-desi
 - Runtime preview only (`previewOnly: true`), no Supabase, no `/api/skills`
 - Local settings/XP/stage progress persistence through `progressAdapter`
   (localStorage stub)
-- Track D remains future scope
+- Completing Track D stores local preview Track D completion and
+  `keyCurrentV1GameplayComplete`; transfer still waits for the final 1H audit
 
 ## File map
 
@@ -51,7 +60,7 @@ Design reference: `src/modules/skills/docs/games/key-current/key-current-v1-desi
 | `KeyCurrentGame.tsx` | Orchestrator: phases, game loop (rAF), collisions, music, runtime integration |
 | `KeyCurrentLanding.tsx` | Landing screen: character, difficulty slider, audio toggles, Track A-D progress dashboard |
 | `KeyCurrentPlayfield.tsx` | Skills Sea scene (sky, sea, boardwalk lane) |
-| `KeyCurrentObstacle.tsx` | Letter gates (coral/driftwood/energy skins), open/shake states |
+| `KeyCurrentObstacle.tsx` | Letter/word gates (coral/driftwood/energy skins), open/shake states |
 | `KeyCurrentCharacter.tsx` | Generated rear-view runner art with opt-in in-game shadow |
 | `KeyCurrentKeyboardHelper.tsx` | Positional onscreen keyboard, touch input, key feedback |
 | `KeyCurrentHud.tsx` | Pause, run label, progress bar, difficulty bolts, music toggle |
@@ -74,14 +83,14 @@ difficulty's re-approach distance and comes again. Completed letters survive
 collisions.
 
 Telemetry is aggregate-only (stage/track/run ids, selected character,
-difficulty, counts, accuracy, input mode, practice bumps, proficiency status,
-track completion status, failure mode, and restart reason when a Track B or
-Track C three-bump restart occurs). No raw key streams, pointer trails, or
-frame arrays are recorded.
+difficulty, counts, accuracy, input mode, practice bumps, word gate totals,
+proficiency status, track completion status, failure mode, and restart reason
+when a Track B/C/D three-bump restart occurs). No raw key streams, raw typed
+sequences, word attempt logs, pointer trails, or frame arrays are recorded.
 
 ## Moving to the main project
 
 See `key-current-migration-readiness.md` in the docs folder. Short version:
-copy this folder + assets + docs, keep the registry entry, point the route
-wrapper at the module, and swap the `@/lib/gaming/*` preview stubs for the
-main project's real services.
+1G completes V1 gameplay scope, but final 1H QA/optimization/docs and the
+transfer-readiness closure audit are still required before copying this module
+into the main project.

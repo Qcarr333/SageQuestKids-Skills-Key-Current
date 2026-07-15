@@ -1,7 +1,26 @@
 # Key Current — Asset Map
 
-Checkpoint: **1F.1 - Punctuation keyboard support + Track B/C bridge revision** (assets unchanged
+Checkpoint: **1G - Track D Short Words Expansion** (assets unchanged
 from 1C/1C.1). Inspected/generated: 2026-07-14.
+
+## 1G note - no new art or Higgsfield usage
+
+Checkpoint 1G is a Track D curriculum, word-gate model, landing/completion,
+runtime metadata, and docs checkpoint. No generated assets were changed, no
+new art was requested, and Higgsfield was not used.
+
+The accepted visual setup remains intact:
+
+- generated gate, causeway texture, and six runner images are reused;
+- Track D words are code-overlaid on the existing blank generated gate;
+- completed/current word-letter styling is CSS-only;
+- all six characters remain visible, selectable, unlocked, and cosmetic-only;
+- future/upcoming gates remain hidden for V1;
+- the road/causeway perspective, lane texture scroll tuning, and gate/runner
+  composition are preserved;
+- the visual keyboard still includes comma and period after `M`;
+- the accepted keyboard helper row offsets are preserved and input mechanics
+  for letters and supported punctuation are unchanged.
 
 ## 1F.1 note - no new art or Higgsfield usage
 

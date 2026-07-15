@@ -93,6 +93,54 @@ export function generateReplaySequence(
     : buildProficiencySequence(stage);
 }
 
+export function buildWordGuidedPracticeSequence(stage: KeyCurrentStage): string[] {
+  const bank = validateKeyCurrentWordBank(stage.wordBank ?? []);
+  const count = stage.practiceObstacleCount;
+  if (bank.length === 0 || count <= 0) return [];
+
+  const orderedBank = [...bank].sort((a, b) => a.length - b.length);
+  return takeWordsWithoutImmediateRepeat(orderedBank, count);
+}
+
+export function buildWordProficiencySequence(stage: KeyCurrentStage): string[] {
+  const bank = validateKeyCurrentWordBank(stage.wordBank ?? []);
+  const count = stage.proficiencyObstacleCount;
+  if (bank.length === 0 || count <= 0) return [];
+
+  const sequence: string[] = [];
+  while (sequence.length < count) {
+    const shuffled = shuffleWords(bank);
+    for (const word of shuffled) {
+      if (sequence.length >= count) break;
+      if (sequence[sequence.length - 1] === word) {
+        const alternate = shuffled.find((candidate) => candidate !== word);
+        if (alternate) {
+          sequence.push(alternate);
+          continue;
+        }
+      }
+      sequence.push(word);
+    }
+  }
+  return sequence.slice(0, count);
+}
+
+export function validateKeyCurrentWordBank(words: string[]): string[] {
+  const seen = new Set<string>();
+  const safeWords: string[] = [];
+
+  for (const rawWord of words) {
+    const word = rawWord.trim().toUpperCase();
+    if (!/^[A-Z]{1,5}$/.test(word)) continue;
+    if (!isKidSafeSequence(word.split(''))) continue;
+    if (seen.has(word)) continue;
+    seen.add(word);
+    safeWords.push(word);
+  }
+
+  return safeWords;
+}
+
 function buildGuidedPracticeSequenceUnsafe(stage: KeyCurrentStage): string[] {
   const keys = stage.activeKeys;
   const count = stage.practiceObstacleCount;
@@ -135,6 +183,28 @@ function findBlockedIndex(sequence: string[]): number {
 
 function normalizeSequenceForSafety(sequence: string[]): string {
   return sequence.join('').replace(/[^A-Z]/g, '');
+}
+
+function takeWordsWithoutImmediateRepeat(words: string[], count: number): string[] {
+  const sequence: string[] = [];
+  for (let index = 0; index < count; index += 1) {
+    const next = words[index % words.length];
+    if (sequence[sequence.length - 1] === next && words.length > 1) {
+      sequence.push(words[(index + 1) % words.length]);
+    } else {
+      sequence.push(next);
+    }
+  }
+  return sequence;
+}
+
+function shuffleWords(words: string[]): string[] {
+  const shuffled = [...words];
+  for (let i = shuffled.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled;
 }
 
 function guardKidSafeSequence(sequence: string[], keys: string[]): string[] {
@@ -260,6 +330,25 @@ export function buildRunObstacles(
   stage: KeyCurrentStage,
   runType: KeyCurrentRunType,
 ): KeyCurrentObstacle[] {
+  if (stage.targetKind === 'word') {
+    const words =
+      runType === 'guided_practice'
+        ? buildWordGuidedPracticeSequence(stage)
+        : buildWordProficiencySequence(stage);
+
+    return words.map((word, index) => ({
+      id: nextObstacleId(),
+      targetKeys: word.split(''),
+      targetKind: 'word',
+      targetWord: word,
+      completedCount: 0,
+      status: index === 0 ? 'approaching' : 'pending',
+      skin: OBSTACLE_SKINS[index % OBSTACLE_SKINS.length],
+      collisions: 0,
+      hadWrongAttempt: false,
+    }));
+  }
+
   const sequence = generateReplaySequence(stage, runType);
 
   return sequence.map((key, index) => ({

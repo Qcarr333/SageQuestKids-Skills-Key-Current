@@ -38,6 +38,7 @@ export const KeyCurrentObstacle = forwardRef<HTMLDivElement, KeyCurrentObstacleP
     const isCollided = obstacle.status === 'collided';
     const remainingTarget = obstacle.targetKeys[obstacle.completedCount] ?? null;
     const isMulti = obstacle.targetKeys.length > 1;
+    const isWordGate = obstacle.targetKind === 'word';
 
     return (
       <div
@@ -67,15 +68,20 @@ export const KeyCurrentObstacle = forwardRef<HTMLDivElement, KeyCurrentObstacleP
               <>
                 <div className={styles.gateLetterGlow} aria-hidden />
                 <div
-                  className={`${styles.gateLetter} ${isMulti ? styles.gateLetterMulti : ''}`}
+                  className={`${styles.gateLetter} ${
+                    isMulti ? styles.gateLetterMulti : ''
+                  } ${isWordGate ? styles.gateWord : ''}`}
                   aria-hidden
                 >
                   {obstacle.targetKeys.map((key, index) => (
                     <span
                       key={`${obstacle.id}-${index}`}
-                      className={
-                        index < obstacle.completedCount ? styles.gateLetterDone : ''
-                      }
+                      className={[
+                        index < obstacle.completedCount ? styles.gateLetterDone : '',
+                        isWordGate && index === obstacle.completedCount
+                          ? styles.gateLetterCurrent
+                          : '',
+                      ].join(' ')}
                     >
                       {key}
                     </span>

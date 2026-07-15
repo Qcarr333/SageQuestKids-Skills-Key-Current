@@ -29,6 +29,8 @@ export type KeyCurrentObstacle = {
   id: string;
   /** Required keys in order. Track A Stage 1 uses a single letter. */
   targetKeys: string[];
+  targetKind?: 'key' | 'word';
+  targetWord?: string;
   /** How many of targetKeys have been completed (survives collisions). */
   completedCount: number;
   status: KeyCurrentObstacleStatus;
@@ -40,12 +42,17 @@ export type KeyCurrentObstacle = {
 
 export type KeyCurrentStageFailureMode = 'guided' | 'three_collision';
 
+export type KeyCurrentStageTargetKind = 'key' | 'word';
+
 export type KeyCurrentStage = {
   stageId: string;
   trackId: string;
   stageName: string;
   stageNumber: number;
+  targetKind?: KeyCurrentStageTargetKind;
   activeKeys: string[];
+  wordBank?: string[];
+  wordLengthLabel?: string;
   practiceObstacleCount: number;
   proficiencyObstacleCount: number;
   failureMode: KeyCurrentStageFailureMode;
@@ -113,6 +120,8 @@ export type KeyCurrentRunStats = {
   incorrectInputs: number;
   collisions: number;
   obstaclesCleared: number;
+  wordGatesCleared: number;
+  totalWordGates: number;
   usedKeyboard: boolean;
   usedTouch: boolean;
   durationMs: number;

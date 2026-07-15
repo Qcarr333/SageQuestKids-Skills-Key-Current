@@ -440,8 +440,24 @@
   letter-spacing: 0.04em;
 }
 
+.gateWord {
+  max-width: 72%;
+  justify-content: center;
+  gap: 0.02em;
+  font-size: clamp(1.9rem, 20cqi, 3.9rem);
+  letter-spacing: 0.02em;
+}
+
 .gateLetterDone {
   opacity: 0.32;
+}
+
+.gateLetterCurrent {
+  color: #fef9c3;
+  -webkit-text-fill-color: #fef9c3;
+  text-shadow:
+    0 0 10px rgba(253, 224, 71, 0.92),
+    0 0 20px rgba(45, 212, 191, 0.62);
 }
 
 @keyframes kcLetterBreath {

@@ -87,6 +87,8 @@ function createRunStats(runType: KeyCurrentRunType): KeyCurrentRunStats {
     incorrectInputs: 0,
     collisions: 0,
     obstaclesCleared: 0,
+    wordGatesCleared: 0,
+    totalWordGates: 0,
     usedKeyboard: false,
     usedTouch: false,
     durationMs: 0,
@@ -433,6 +435,8 @@ function KeyCurrentExperience() {
           collisions: stats.collisions,
           practiceBumps: stats.collisions,
           obstaclesCleared: stats.obstaclesCleared,
+          wordGatesCleared: stats.wordGatesCleared,
+          totalWordGates: stats.totalWordGates,
           completionType: 'in_progress',
           proficiencyStatus: 'in_progress',
           trackCompletionStatus: formatTrackCompletionStatus(
@@ -541,6 +545,8 @@ function KeyCurrentExperience() {
         collisions: stats.collisions,
         practiceBumps: stats.collisions,
         obstaclesCleared: stats.obstaclesCleared,
+        wordGatesCleared: stats.wordGatesCleared,
+        totalWordGates: stats.totalWordGates,
         completionType: summary.completionType,
         proficiencyStatus: summary.completionType,
         xpProposed: summary.xpProposed,
@@ -598,6 +604,14 @@ function KeyCurrentExperience() {
             ),
             trackCComplete: isTrackComplete(
               'track_c_outer_reach',
+              completedLessons,
+            ),
+            trackDComplete: isTrackComplete(
+              'track_d_short_words',
+              completedLessons,
+            ),
+            keyCurrentV1GameplayComplete: isTrackComplete(
+              'track_d_short_words',
               completedLessons,
             ),
           },
@@ -663,6 +677,9 @@ function KeyCurrentExperience() {
         }
 
         stats.obstaclesCleared += 1;
+        if (obstacle.targetKind === 'word') {
+          stats.wordGatesCleared += 1;
+        }
         modeRef.current = 'hold'; // freeze position for the open animation
         patchObstacle(index, { completedCount, status: 'cleared' });
 
@@ -759,6 +776,9 @@ function KeyCurrentExperience() {
       activeIndexRef.current = 0;
       statsRef.current = createRunStats(type);
       statsRef.current.requiredInputs = countRequiredInputs(runObstacles);
+      statsRef.current.totalWordGates = runObstacles.filter(
+        (obstacle) => obstacle.targetKind === 'word',
+      ).length;
       progressRef.current = 0;
       modeRef.current = 'hold';
       inputLockedRef.current = false;
@@ -930,6 +950,19 @@ const upcoming2 = null;
     activeObstacle && activeObstacle.status !== 'cleared'
       ? activeObstacle.targetKeys[activeObstacle.completedCount] ?? null
       : null;
+  const activeWord =
+    activeObstacle?.targetKind === 'word' && activeObstacle.status !== 'cleared'
+      ? activeObstacle.targetWord ?? activeObstacle.targetKeys.join('')
+      : null;
+  const runPrompt = activeWord
+    ? `Type ${activeWord}!`
+    : currentTarget
+      ? `Find ${currentTarget}!`
+      : '';
+  const keyboardHelperActiveKeys =
+    activeObstacle?.targetKind === 'word'
+      ? Array.from(new Set(activeObstacle.targetKeys))
+      : stage.activeKeys;
 
   const inRunPhases =
     phase === 'countdown' ||
@@ -988,9 +1021,7 @@ const upcoming2 = null;
       />
 
       <p aria-live="polite" className="sr-only">
-        {phase === 'running' && currentTarget
-          ? `Find the letter ${currentTarget}`
-          : ''}
+        {phase === 'running' && runPrompt ? runPrompt : ''}
       </p>
 
       {phase === 'landing' && (
@@ -1048,7 +1079,18 @@ const upcoming2 = null;
               {/* Voice Help is a stub in this checkpoint: visible guidance text. */}
               {settings.voiceHelpEnabled &&
                 phase === 'running' &&
-                currentTarget && (
+                activeWord && (
+                  <div
+                    key={promptToken}
+                    className={`${styles.voicePrompt} absolute left-1/2 top-2 z-30 -translate-x-1/2 rounded-full border-2 border-amber-300/80 bg-slate-950/80 px-4 py-1.5 text-base font-black text-amber-200 sm:text-lg`}
+                  >
+                    Type {activeWord}!
+                  </div>
+                )}
+              {settings.voiceHelpEnabled &&
+                phase === 'running' &&
+                currentTarget &&
+                !activeWord && (
                   <div
                     key={promptToken}
                     className={`${styles.voicePrompt} absolute left-1/2 top-2 z-30 -translate-x-1/2 rounded-full border-2 border-amber-300/80 bg-slate-950/80 px-4 py-1.5 text-base font-black text-amber-200 sm:text-lg`}
@@ -1210,7 +1252,7 @@ const upcoming2 = null;
           </div>
 
           <KeyCurrentKeyboardHelper
-            activeKeys={stage.activeKeys}
+            activeKeys={keyboardHelperActiveKeys}
             targetKey={phase === 'running' && !paused ? currentTarget : null}
             keyFlash={keyFlash}
             onTouchKey={(key) => handleGameKey(key, 'touch')}
